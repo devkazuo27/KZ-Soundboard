@@ -1,0 +1,9 @@
+# Dependencias: se obtienen con tools/fetch-deps.sh (ver el porque en ese script)
+lib/
+
+# Artefactos de compilacion
+classes/
+test-classes/
+staging/
+dist/
+*.class

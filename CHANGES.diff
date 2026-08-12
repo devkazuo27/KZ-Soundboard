@@ -1,0 +1,1064 @@
+diff -ru '--exclude=cache' work/src-decompiled/exp/converter/ConverterFrame.java build/src/exp/converter/ConverterFrame.java
+--- work/src-decompiled/exp/converter/ConverterFrame.java	2026-08-12 00:22:26.161947100 -0600
++++ build/src/exp/converter/ConverterFrame.java	2026-08-12 00:54:57.807532900 -0600
+@@ -160,7 +160,7 @@
+         JLabel lblEncodingMessages = new JLabel("Encoding Messages:");
+         this.encodingProgressLabel = new JLabel("0%");
+         this.encodingMessageLabel = new JLabel("");
+-        this.getContentPane().setLayout((LayoutManager)new MigLayout("", "[45px][2px][14px][2px][34px][1px][33px][222px][71px]", "[14px][23px][2px][14px][23px][14px][23px][2px][14px][14px]"));
++        this.getContentPane().setLayout((LayoutManager)new MigLayout("insets 14, gapx 8, gapy 6", "[45px][2px][14px][2px][34px][1px][33px][222px][71px]", "[14px][23px][2px][14px][23px][14px][23px][2px][14px][14px]"));
+         this.getContentPane().add((Component)separator_1, "cell 0 7 9 1,growx,aligny top");
+         this.getContentPane().add((Component)separator, "cell 0 2 9 1,growx,aligny top");
+         this.getContentPane().add((Component)lblInputFile, "cell 0 0 3 1,alignx left,aligny top");
+diff -ru '--exclude=cache' work/src-decompiled/exp/gui/AudioLevelsFrame.java build/src/exp/gui/AudioLevelsFrame.java
+--- work/src-decompiled/exp/gui/AudioLevelsFrame.java	2026-08-12 00:22:26.483825300 -0600
++++ build/src/exp/gui/AudioLevelsFrame.java	2026-08-12 00:54:57.807532900 -0600
+@@ -10,6 +10,7 @@
+ import javax.swing.GroupLayout;
+ import javax.swing.JFrame;
+ import javax.swing.JLabel;
++import javax.swing.UIManager;
+ import javax.swing.JSeparator;
+ import javax.swing.JSlider;
+ import javax.swing.LayoutStyle;
+@@ -53,7 +54,6 @@
+         this.primarySlider.setMinimum(-66);
+         this.primarySlider.setMaximum(6);
+         JSeparator separator = new JSeparator();
+-        separator.setForeground(Color.BLACK);
+         JLabel lblSecondaryOutputGain = new JLabel("Secondary Output Gain:");
+         this.secondarySlider = new JSlider();
+         this.secondarySlider.addChangeListener(new ChangeListener(){
+@@ -75,7 +75,6 @@
+         this.secondarySlider.setMaximum(6);
+         this.secondarySlider.setMajorTickSpacing(6);
+         JSeparator separator_1 = new JSeparator();
+-        separator_1.setForeground(Color.BLACK);
+         JLabel lblMicInjectorGain = new JLabel("Mic Injector Gain:");
+         this.micinjectorSlider = new JSlider();
+         this.micinjectorSlider.addChangeListener(new ChangeListener(){
+diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SettingsFrame.java build/src/exp/gui/SettingsFrame.java
+--- work/src-decompiled/exp/gui/SettingsFrame.java	2026-08-12 00:22:26.442018900 -0600
++++ build/src/exp/gui/SettingsFrame.java	2026-08-12 00:53:34.392100000 -0600
+@@ -42,6 +42,7 @@
+ import javax.swing.JFormattedTextField;
+ import javax.swing.JFrame;
+ import javax.swing.JLabel;
++import javax.swing.UIManager;
+ import javax.swing.JSeparator;
+ import javax.swing.JSpinner;
+ import javax.swing.JTextField;
+@@ -105,14 +106,14 @@
+         this.setDefaultCloseOperation(2);
+         this.setTitle("Settings");
+         JLabel lblstopAllSounds = new JLabel("'Stop All Sounds' hotkey:");
+-        lblstopAllSounds.setFont(new Font("Tahoma", 1, 11));
++        lblstopAllSounds.setFont(UIManager.getFont("Label.font").deriveFont(Font.BOLD));
+         this.stopAllTextField = new JTextField();
+         this.stopAllTextField.addFocusListener(new FocusAdapter(){
+ 
+             @Override
+             public void focusLost(FocusEvent arg0) {
+                 GlobalScreen.getInstance().removeNativeKeyListener((NativeKeyListener)SettingsFrame.this.stopKeyInputGetter);
+-                SettingsFrame.this.stopAllTextField.setBackground(Color.WHITE);
++                Ui.markIdle(SettingsFrame.this.stopAllTextField);
+             }
+         });
+         this.stopAllTextField.setEditable(false);
+@@ -120,7 +121,7 @@
+ 
+             @Override
+             public void mousePressed(MouseEvent arg0) {
+-                SettingsFrame.this.stopAllTextField.setBackground(Color.CYAN);
++                Ui.markCapturing(SettingsFrame.this.stopAllTextField);
+                 GlobalScreen.getInstance().addNativeKeyListener((NativeKeyListener)SettingsFrame.this.stopKeyInputGetter);
+             }
+         });
+@@ -165,18 +166,16 @@
+             }
+         });
+         JSeparator separator = new JSeparator();
+-        separator.setForeground(Color.BLACK);
+         JSeparator separator_1 = new JSeparator();
+-        separator_1.setForeground(Color.BLACK);
+         JLabel lblMicInjectorSettings = new JLabel("Mic Injector settings:");
+-        lblMicInjectorSettings.setForeground(Color.RED);
++        
+         JLabel lblMicrophone = new JLabel("Microphone:");
+         this.micComboBox = new JComboBox();
+         JLabel lblVirtualAudioCable = new JLabel("Virtual Audio Cable:");
+         this.vacComboBox = new JComboBox();
+         JLabel lblUseMicInjector = new JLabel("*Use Mic Injector when your using a virtual audio cable as your input on other software.");
+-        lblUseMicInjector.setFont(new Font("Tahoma", 2, 10));
+-        JLabel lblVersion = new JLabel("Version: 0.5");
++        lblUseMicInjector.setFont(UIManager.getFont("Label.font").deriveFont(Font.ITALIC));
++        JLabel lblVersion = new JLabel("Version: 0.5.1");
+         JLabel lblhalfSpeedPlayback = new JLabel("'Modified playback speed' combo key:");
+         this.slowKeyTextField = new JTextField();
+         this.slowKeyTextField.addFocusListener(new FocusAdapter(){
+@@ -184,7 +183,7 @@
+             @Override
+             public void focusLost(FocusEvent e) {
+                 GlobalScreen.getInstance().removeNativeKeyListener((NativeKeyListener)SettingsFrame.this.slowKeyInputGetter);
+-                SettingsFrame.this.slowKeyTextField.setBackground(Color.WHITE);
++                Ui.markIdle(SettingsFrame.this.slowKeyTextField);
+             }
+         });
+         this.slowKeyTextField.setEditable(false);
+@@ -192,7 +191,7 @@
+ 
+             @Override
+             public void mousePressed(MouseEvent arg0) {
+-                SettingsFrame.this.slowKeyTextField.setBackground(Color.CYAN);
++                Ui.markCapturing(SettingsFrame.this.slowKeyTextField);
+                 GlobalScreen.getInstance().addNativeKeyListener((NativeKeyListener)SettingsFrame.this.slowKeyInputGetter);
+             }
+         });
+@@ -221,7 +220,7 @@
+             @Override
+             public void focusLost(FocusEvent arg0) {
+                 GlobalScreen.getInstance().removeNativeKeyListener((NativeKeyListener)SettingsFrame.this.incKeyInputGetter);
+-                SettingsFrame.this.incModSpeedHotKeyTextField.setBackground(Color.WHITE);
++                Ui.markIdle(SettingsFrame.this.incModSpeedHotKeyTextField);
+             }
+         });
+         this.incModSpeedHotKeyTextField.addMouseListener(new MouseAdapter(){
+@@ -229,7 +228,7 @@
+             @Override
+             public void mousePressed(MouseEvent arg0) {
+                 GlobalScreen.getInstance().addNativeKeyListener((NativeKeyListener)SettingsFrame.this.incKeyInputGetter);
+-                SettingsFrame.this.incModSpeedHotKeyTextField.setBackground(Color.CYAN);
++                Ui.markCapturing(SettingsFrame.this.incModSpeedHotKeyTextField);
+             }
+         });
+         this.incModSpeedHotKeyTextField.setEditable(false);
+@@ -239,7 +238,7 @@
+ 
+             @Override
+             public void focusLost(FocusEvent e) {
+-                SettingsFrame.this.decModSpeedHotKeyTextField.setBackground(Color.WHITE);
++                Ui.markIdle(SettingsFrame.this.decModSpeedHotKeyTextField);
+                 GlobalScreen.getInstance().removeNativeKeyListener((NativeKeyListener)SettingsFrame.this.decKeyInputGetter);
+             }
+         });
+@@ -248,7 +247,7 @@
+             @Override
+             public void mousePressed(MouseEvent e) {
+                 GlobalScreen.getInstance().addNativeKeyListener((NativeKeyListener)SettingsFrame.this.decKeyInputGetter);
+-                SettingsFrame.this.decModSpeedHotKeyTextField.setBackground(Color.CYAN);
++                Ui.markCapturing(SettingsFrame.this.decModSpeedHotKeyTextField);
+             }
+         });
+         this.decModSpeedHotKeyTextField.setEditable(false);
+@@ -256,13 +255,13 @@
+         JLabel lblModifierSpeedIncrement = new JLabel("Modifier speed Increment hotkey:");
+         JLabel lblNewLabel = new JLabel("Modifier speed Decrement hotkey:");
+         JLabel lblpushToTalk = new JLabel("VoIP 'Push To Talk' Key(s): ");
+-        lblpushToTalk.setFont(new Font("Tahoma", 1, 11));
++        lblpushToTalk.setFont(UIManager.getFont("Label.font").deriveFont(Font.BOLD));
+         this.pttKeysTextField = new JTextField();
+         this.pttKeysTextField.addFocusListener(new FocusAdapter(){
+ 
+             @Override
+             public void focusLost(FocusEvent arg0) {
+-                SettingsFrame.this.pttKeysTextField.setBackground(Color.WHITE);
++                Ui.markIdle(SettingsFrame.this.pttKeysTextField);
+                 SettingsFrame.this.pttKeysInputGetter.clearPressedKeys();
+                 SettingsFrame.this.pttKeysTextField.removeKeyListener(SettingsFrame.this.pttKeysInputGetter);
+             }
+@@ -273,14 +272,14 @@
+             public void mousePressed(MouseEvent arg0) {
+                 SettingsFrame.this.pttKeysTextField.removeKeyListener(SettingsFrame.this.pttKeysInputGetter);
+                 SettingsFrame.this.pttKeysTextField.addKeyListener(SettingsFrame.this.pttKeysInputGetter);
+-                SettingsFrame.this.pttKeysTextField.setBackground(Color.CYAN);
++                Ui.markCapturing(SettingsFrame.this.pttKeysTextField);
+             }
+         });
+         this.pttKeysTextField.setEditable(false);
+         this.pttKeysTextField.setColumns(10);
+         this.pttKeysTextField.setFocusTraversalKeysEnabled(false);
+         JLabel lblOverlapSameSound = new JLabel("Overlap same sound file:");
+-        lblOverlapSameSound.setFont(new Font("Tahoma", 1, 11));
++        lblOverlapSameSound.setFont(UIManager.getFont("Label.font").deriveFont(Font.BOLD));
+         this.fOverlapClipsCheckbox = new JCheckBox("");
+         this.fOverlapClipsCheckbox.addActionListener(new ActionListener(){
+ 
+@@ -335,7 +334,7 @@
+         this.decModSpeedHotKeyTextField.setText(NativeKeyEvent.getKeyText((int)Utils.getModspeeddownKey()));
+         this.pttKeysInputGetter.updateTextField();
+         this.fOverlapClipsCheckbox.setSelected(Utils.isOverlapSameClipWhilePlaying());
+-        this.getContentPane().setLayout((LayoutManager)new MigLayout("", "[101px][20px][45px][13px][71px][4px][34px,grow][10px][135px]", "[20px][20px][20px][20px][20px][20px][21px][][2px][14px][20px][20px][13px][2px][14px][23px]"));
++        this.getContentPane().setLayout((LayoutManager)new MigLayout("insets 14, gapx 8, gapy 6", "[101px][20px][45px][13px][71px][4px][34px,grow][10px][135px]", "[20px][20px][20px][20px][20px][20px][21px][][2px][14px][20px][20px][13px][2px][14px][23px]"));
+         this.getContentPane().add((Component)lblstopAllSounds, "cell 0 0 3 1,alignx left,aligny center");
+         this.getContentPane().add((Component)lblhalfSpeedPlayback, "cell 0 1 5 1,growx,aligny center");
+         this.getContentPane().add((Component)lblModifiedPlaybackSpeed, "cell 0 2 3 1,alignx left,aligny center");
+@@ -353,14 +352,14 @@
+             @Override
+             public void mousePressed(MouseEvent e) {
+                 GlobalScreen.getInstance().addNativeKeyListener((NativeKeyListener)SettingsFrame.this.fOverlapKeyInputGetter);
+-                SettingsFrame.this.fOverlapHotkeyTextField.setBackground(Color.CYAN);
++                Ui.markCapturing(SettingsFrame.this.fOverlapHotkeyTextField);
+             }
+         });
+         this.fOverlapHotkeyTextField.addFocusListener(new FocusAdapter(){
+ 
+             @Override
+             public void focusLost(FocusEvent e) {
+-                SettingsFrame.this.fOverlapHotkeyTextField.setBackground(Color.WHITE);
++                Ui.markIdle(SettingsFrame.this.fOverlapHotkeyTextField);
+                 GlobalScreen.getInstance().removeNativeKeyListener((NativeKeyListener)SettingsFrame.this.fOverlapKeyInputGetter);
+             }
+         });
+@@ -429,12 +428,12 @@
+     }
+ 
+     private void focusLostOnItems() {
+-        this.stopAllTextField.setBackground(Color.WHITE);
+-        this.slowKeyTextField.setBackground(Color.WHITE);
+-        this.decModSpeedHotKeyTextField.setBackground(Color.WHITE);
+-        this.incModSpeedHotKeyTextField.setBackground(Color.WHITE);
+-        this.fOverlapHotkeyTextField.setBackground(Color.WHITE);
+-        this.pttKeysTextField.setBackground(Color.WHITE);
++        Ui.markIdle(this.stopAllTextField);
++        Ui.markIdle(this.slowKeyTextField);
++        Ui.markIdle(this.decModSpeedHotKeyTextField);
++        Ui.markIdle(this.incModSpeedHotKeyTextField);
++        Ui.markIdle(this.fOverlapHotkeyTextField);
++        Ui.markIdle(this.pttKeysTextField);
+         this.pttKeysInputGetter.clearPressedKeys();
+         GlobalScreen gs = GlobalScreen.getInstance();
+         gs.removeNativeKeyListener((NativeKeyListener)this.stopKeyInputGetter);
+diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardEntryEditor.java build/src/exp/gui/SoundboardEntryEditor.java
+--- work/src-decompiled/exp/gui/SoundboardEntryEditor.java	2026-08-12 00:22:26.535869600 -0600
++++ build/src/exp/gui/SoundboardEntryEditor.java	2026-08-12 00:54:57.813700100 -0600
+@@ -13,6 +13,7 @@
+ import exp.soundboard.SoundboardEntry;
+ import exp.soundboard.Utils;
+ import java.awt.Color;
++import java.awt.Font;
+ import java.awt.event.ActionEvent;
+ import java.awt.event.ActionListener;
+ import java.awt.event.MouseAdapter;
+@@ -24,6 +25,7 @@
+ import javax.swing.JFileChooser;
+ import javax.swing.JFrame;
+ import javax.swing.JLabel;
++import javax.swing.UIManager;
+ import javax.swing.JOptionPane;
+ import javax.swing.JSeparator;
+ import javax.swing.JTextField;
+@@ -90,11 +92,11 @@
+             @Override
+             public void mousePressed(MouseEvent e) {
+                 if (e.getButton() == 1) {
+-                    SoundboardEntryEditor.this.keysTextField.setBackground(Color.CYAN);
++                    Ui.markCapturing(SoundboardEntryEditor.this.keysTextField);
+                     GlobalScreen.getInstance().addNativeKeyListener((NativeKeyListener)SoundboardEntryEditor.this.inputGetter);
+                     SoundboardEntryEditor.this.inputGetter.clearPressedKeys();
+                 } else if (e.getButton() == 3) {
+-                    SoundboardEntryEditor.this.keysTextField.setBackground(Color.WHITE);
++                    Ui.markIdle(SoundboardEntryEditor.this.keysTextField);
+                     GlobalScreen.getInstance().removeNativeKeyListener((NativeKeyListener)SoundboardEntryEditor.this.inputGetter);
+                     SoundboardEntryEditor.this.inputGetter.clearPressedKeys();
+                     SoundboardEntryEditor.this.keyNums = new int[0];
+@@ -122,7 +124,7 @@
+ 
+             @Override
+             public void mouseClicked(MouseEvent arg0) {
+-                SoundboardEntryEditor.this.keysTextField.setBackground(Color.WHITE);
++                Ui.markIdle(SoundboardEntryEditor.this.keysTextField);
+                 GlobalScreen.getInstance().removeNativeKeyListener((NativeKeyListener)SoundboardEntryEditor.this.inputGetter);
+             }
+         });
+diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java build/src/exp/gui/SoundboardFrame.java
+--- work/src-decompiled/exp/gui/SoundboardFrame.java	2026-08-12 00:22:26.725047100 -0600
++++ build/src/exp/gui/SoundboardFrame.java	2026-08-12 00:54:57.813700100 -0600
+@@ -24,10 +24,13 @@
+ import exp.soundboard.Utils;
+ import java.awt.Color;
+ import java.awt.Component;
++import java.awt.Container;
+ import java.awt.Desktop;
+ import java.awt.Dimension;
++import java.awt.Frame;
+ import java.awt.Image;
+ import java.awt.LayoutManager;
++import java.awt.Taskbar;
+ import java.awt.event.ActionEvent;
+ import java.awt.event.ActionListener;
+ import java.awt.event.ItemEvent;
+@@ -52,15 +55,22 @@
+ import javax.swing.JMenu;
+ import javax.swing.JMenuBar;
+ import javax.swing.JMenuItem;
++import javax.swing.JPanel;
++import javax.swing.JRadioButtonMenuItem;
++import javax.swing.ButtonGroup;
+ import javax.swing.JOptionPane;
+ import javax.swing.JScrollPane;
+ import javax.swing.JSeparator;
+ import javax.swing.JTable;
+ import javax.swing.KeyStroke;
++import javax.swing.SwingUtilities;
+ import javax.swing.UIManager;
+ import javax.swing.UnsupportedLookAndFeelException;
+ import javax.swing.filechooser.FileFilter;
++import javax.swing.SwingConstants;
++import javax.swing.table.DefaultTableCellRenderer;
+ import javax.swing.table.DefaultTableModel;
++import javax.swing.table.TableCellRenderer;
+ import javax.swing.table.TableColumnModel;
+ import net.miginfocom.swing.MigLayout;
+ import org.jnativehook.GlobalScreen;
+@@ -71,7 +81,7 @@
+     private static final long serialVersionUID = 8934802095461138592L;
+     final SoundboardFrame thisFrameInstance;
+     public static final float VERSION = 0.5f;
+-    private final String title = "EXP Soundboard vers. 0.5 | ";
++    private static final String TITLE = "EXP Soundboard 0.5.1";
+     private JComboBox<String> secondarySpeakerComboBox;
+     private JComboBox<String> primarySpeakerComboBox;
+     public AudioManager audioManager;
+@@ -119,9 +129,18 @@
+     }
+ 
+     public static void main(String[] args) {
++        // DISENO: el tema tiene que estar puesto antes de crear ningun componente.
++        Ui.installTheme();
+         Utils.initGlobalKeyLibrary();
+         Utils.startMp3Decoder();
+-        new SoundboardFrame().setVisible(true);
++        // FIX: los componentes Swing deben construirse en el hilo de eventos (EDT).
++        SwingUtilities.invokeLater(new Runnable(){
++
++            @Override
++            public void run() {
++                new SoundboardFrame().setVisible(true);
++            }
++        });
+     }
+ 
+     public SoundboardFrame() {
+@@ -132,36 +151,14 @@
+                 SoundboardFrame.this.exit();
+             }
+         });
+-        try {
+-            UIManager.LookAndFeelInfo[] lookAndFeelInfoArray = UIManager.getInstalledLookAndFeels();
+-            int n = lookAndFeelInfoArray.length;
+-            int n2 = 0;
+-            while (n2 < n) {
+-                UIManager.LookAndFeelInfo info = lookAndFeelInfoArray[n2];
+-                if ("Nimbus".equals(info.getName())) {
+-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+-                    break;
+-                }
+-                ++n2;
+-            }
+-        }
+-        catch (ClassNotFoundException ex) {
+-            Logger.getLogger(SoundboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+-        }
+-        catch (InstantiationException ex) {
+-            Logger.getLogger(SoundboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+-        }
+-        catch (IllegalAccessException ex) {
+-            Logger.getLogger(SoundboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+-        }
+-        catch (UnsupportedLookAndFeelException ex) {
+-            Logger.getLogger(SoundboardFrame.class.getName()).log(Level.SEVERE, null, ex);
+-        }
++        // DISENO: el Look and Feel lo instala main() con Ui.installTheme(), antes de crear
++        // ningun componente. El bloque original buscaba Nimbus pero acababa aplicando el del
++        // sistema, que es de donde venia el aspecto de Windows XP de la aplicacion.
+         filechooser = new JFileChooser();
+         this.audioManager = new AudioManager();
+         soundboard = new Soundboard();
+         this.setDefaultCloseOperation(3);
+-        this.setTitle("EXP Soundboard vers. 0.5 | ");
++        this.setTitle(TITLE);
+         this.setIconImage(icon);
+         this.macInit();
+         this.secondarySpeakerComboBox = new JComboBox();
+@@ -194,7 +191,7 @@
+                 Utils.stopAllClips();
+             }
+         });
+-        this.useSecondaryCheckBox = new JCheckBox("Use");
++        this.useSecondaryCheckBox = new JCheckBox("Enable");
+         this.useSecondaryCheckBox.addActionListener(new ActionListener(){
+ 
+             @Override
+@@ -211,7 +208,8 @@
+                 new SoundboardEntryEditor(SoundboardFrame.this.thisFrameInstance);
+             }
+         });
+-        this.useMicInjectorCheckBox = new JCheckBox("Use Mic Injector (see Option -> Settings)");
++        this.useMicInjectorCheckBox = new JCheckBox("Use Mic Injector");
++        this.useMicInjectorCheckBox.setToolTipText("Mixes your microphone into the secondary output. Configure it in Option \u2192 Settings");
+         this.useMicInjectorCheckBox.addActionListener(new ActionListener(){
+ 
+             @Override
+@@ -220,12 +218,12 @@
+                 SoundboardFrame.this.updateMicInjector();
+             }
+         });
+-        JLabel lblstOutputeg = new JLabel("1st Output (e.g. your speakers)");
+-        lblstOutputeg.setForeground(Color.DARK_GRAY);
+-        JLabel lblndOutputeg = new JLabel("2nd Output (e.g. virtual audio cable \"input\")(optional)");
+-        lblndOutputeg.setForeground(Color.DARK_GRAY);
+-        JSeparator separator_4 = new JSeparator();
++        JLabel lblstOutputeg = new JLabel("Primary output");
++        lblstOutputeg.setToolTipText("Where you hear the clips \u2014 normally your speakers or headphones");
++        JLabel lblndOutputeg = new JLabel("Secondary output");
++        lblndOutputeg.setToolTipText("Optional \u2014 e.g. a virtual audio cable input, so other people hear the clips");
+         this.autoPptCheckBox = new JCheckBox("Auto-hold PTT key(s)");
++        this.autoPptCheckBox.setToolTipText("Holds your push-to-talk keys down while a clip plays");
+         this.autoPptCheckBox.addActionListener(new ActionListener(){
+ 
+             @Override
+@@ -256,7 +254,6 @@
+             }
+         });
+         scrollPane.setViewportView(this.table);
+-        this.getContentPane().setLayout((LayoutManager)new MigLayout("gapx  2:4:5, gapy 2:4:5, fillx", "[][][][6px][20px][6px][2px][10px][53px][6px][][24px][2px][43px]", "[grow,fill][23px][14px][20px][14px][23px][2px][23px]"));
+         JButton btnRemove = new JButton("Remove");
+         btnRemove.addActionListener(new ActionListener(){
+ 
+@@ -276,7 +273,6 @@
+                 }
+             }
+         });
+-        this.getContentPane().add((Component)btnRemove, "cell 1 1,alignx left,aligny top");
+         JButton btnEdit = new JButton("Edit");
+         btnEdit.addActionListener(new ActionListener(){
+ 
+@@ -291,7 +287,6 @@
+                 }
+             }
+         });
+-        this.getContentPane().add((Component)btnEdit, "cell 2 1,alignx left,aligny top");
+         JButton btnPlay = new JButton("Play");
+         btnPlay.addActionListener(new ActionListener(){
+ 
+@@ -309,18 +304,59 @@
+                 }
+             }
+         });
+-        this.getContentPane().add((Component)btnPlay, "cell 10 1,alignx right,aligny top");
+-        this.getContentPane().add((Component)this.useMicInjectorCheckBox, "cell 0 7 7 1,alignx left,aligny top");
+-        this.getContentPane().add((Component)this.autoPptCheckBox, "cell 8 7 6 1,alignx right,aligny top");
+-        this.getContentPane().add((Component)separator_4, "cell 0 6 14 1,growx,aligny top");
+-        this.getContentPane().add((Component)scrollPane, "cell 0 0 14 1,grow");
+-        this.getContentPane().add(this.primarySpeakerComboBox, "cell 0 3 14 1,growx,aligny top");
+-        this.getContentPane().add(this.secondarySpeakerComboBox, "cell 0 5 12 1,growx,aligny center");
+-        this.getContentPane().add((Component)this.useSecondaryCheckBox, "cell 13 5,alignx left,aligny top");
+-        this.getContentPane().add((Component)btnAdd, "cell 0 1,alignx left,aligny top");
+-        this.getContentPane().add((Component)btnStop, "cell 11 1 3 1,alignx right,aligny top");
+-        this.getContentPane().add((Component)lblndOutputeg, "cell 0 4 7 1,alignx left,aligny top");
+-        this.getContentPane().add((Component)lblstOutputeg, "cell 0 2 7 1,alignx left,aligny top");
++        // ------------------------------------------------------------ DISENO
++        // Una sola columna con secciones separadas, margenes de verdad y tamanos derivados
++        // de la fuente en lugar de columnas fijas en pixeles (que no escalan con el DPI).
++        this.table.setRowHeight(26);
++        this.table.setShowGrid(false);
++        this.table.setIntercellSpacing(new Dimension(0, 0));
++        this.table.setFillsViewportHeight(true);
++        this.table.getTableHeader().setReorderingAllowed(false);
++        // DISENO: la cabecera venia centrada y los datos alineados a la izquierda.
++        TableCellRenderer headerRenderer = this.table.getTableHeader().getDefaultRenderer();
++        if (headerRenderer instanceof DefaultTableCellRenderer) {
++            ((DefaultTableCellRenderer)headerRenderer).setHorizontalAlignment(SwingConstants.LEADING);
++        }
++        Ui.styleTableContainer(scrollPane);
++
++        btnAdd.setToolTipText("Add a sound clip and assign hotkeys to it");
++        btnRemove.setToolTipText("Remove the selected clip");
++        btnEdit.setToolTipText("Change the file or hotkeys of the selected clip");
++        btnPlay.setToolTipText("Play the selected clip");
++        btnStop.setToolTipText("Stop everything that is playing");
++
++        JPanel toolbar = new JPanel(new MigLayout("insets 0, gap 6", "[][][]push[][]"));
++        toolbar.setOpaque(false);
++        toolbar.add(btnAdd);
++        toolbar.add(btnRemove);
++        toolbar.add(btnEdit);
++        toolbar.add(btnPlay);
++        toolbar.add(btnStop);
++
++        JPanel outputs = new JPanel(new MigLayout("insets 0, gap 6 4, fillx", "[grow,fill][]"));
++        outputs.setOpaque(false);
++        outputs.add(lblstOutputeg, "span 2, wrap");
++        outputs.add(this.primarySpeakerComboBox, "span 2, growx, gapbottom 10, wrap");
++        outputs.add(lblndOutputeg, "span 2, wrap");
++        outputs.add(this.secondarySpeakerComboBox, "growx");
++        outputs.add(this.useSecondaryCheckBox, "gapleft 6");
++
++        JPanel options = new JPanel(new MigLayout("insets 0, gap 6, fillx", "[grow,fill][]"));
++        options.setOpaque(false);
++        options.add(this.useMicInjectorCheckBox);
++        options.add(this.autoPptCheckBox, "align right");
++
++        Container content = this.getContentPane();
++        content.setLayout((LayoutManager)new MigLayout("insets 14, gap 10, fillx, wrap 1", "[grow,fill]", "[grow,fill][][][][][]"));
++        content.add(scrollPane, "grow");
++        content.add(toolbar, "growx");
++        content.add(Ui.section("Output devices"), "growx, gaptop 6");
++        content.add(outputs, "growx");
++        content.add(Ui.section("Options"), "growx, gaptop 6");
++        content.add(options, "growx");
++        // Sin esto la tabla arranca con una fila vacia fantasma.
++        this.updateSoundboardTable();
++
+         this.menuBar = new JMenuBar();
+         this.setJMenuBar(this.menuBar);
+         JMenu mnFile = new JMenu("File");
+@@ -402,6 +438,29 @@
+             }
+         });
+         mnEdit.add(mntmSettings);
++        JMenu mnAppearance = new JMenu("Appearance");
++        ButtonGroup themeGroup = new ButtonGroup();
++        String[][] themes = new String[][]{{Ui.SYSTEM, "Match system"}, {Ui.LIGHT, "Light"}, {Ui.DARK, "Dark"}};
++        String[][] stringArray = themes;
++        int themeCount = themes.length;
++        int themeIndex = 0;
++        while (themeIndex < themeCount) {
++            final String key = stringArray[themeIndex][0];
++            JRadioButtonMenuItem item = new JRadioButtonMenuItem(stringArray[themeIndex][1]);
++            item.setSelected(key.equals(Ui.currentTheme()));
++            item.addActionListener(new ActionListener(){
++
++                @Override
++                public void actionPerformed(ActionEvent e) {
++                    Ui.setTheme(key);
++                }
++            });
++            themeGroup.add(item);
++            mnAppearance.add(item);
++            ++themeIndex;
++        }
++        mnEdit.add(mnAppearance);
++
+         JMenuItem mntmAudioLevels = new JMenuItem("Audio Levels");
+         mntmAudioLevels.addActionListener(new ActionListener(){
+ 
+@@ -426,7 +485,7 @@
+             }
+         });
+         mnEdit.add(mntmAudioConverter);
+-        this.setMinimumSize(new Dimension(400, 500));
++        this.setMinimumSize(new Dimension(460, 520));
+         this.updateSpeakerComboBoxes();
+         this.pack();
+         this.thisFrameInstance = this;
+@@ -457,6 +516,9 @@
+             }
+         });
+         TableColumnModel columnmod = this.table.getColumnModel();
++        // DISENO: el nombre del clip es lo que mas se lee, dale mas sitio que las teclas.
++        columnmod.getColumn(0).setPreferredWidth(300);
++        columnmod.getColumn(1).setPreferredWidth(180);
+         columnmod.getColumn(3).setMinWidth(0);
+         columnmod.getColumn(3).setMaxWidth(0);
+         columnmod.getColumn(3).setWidth(0);
+@@ -469,7 +531,7 @@
+         this.currentSoundboardFile = null;
+         soundboard = new Soundboard();
+         this.updateSoundboardTable();
+-        this.setTitle("EXP Soundboard vers. 0.5 | ");
++        this.setTitle(TITLE);
+     }
+ 
+     private void fileOpen() {
+@@ -501,7 +563,7 @@
+         if ((session = fc.showSaveDialog(null)) == 0) {
+             File file = fc.getSelectedFile();
+             this.currentSoundboardFile = soundboard.saveAsJsonFile(file);
+-            this.setTitle("EXP Soundboard vers. 0.5 | " + this.currentSoundboardFile.getName());
++            this.setTitle(TITLE + "  \u2014  " + this.currentSoundboardFile.getName());
+         }
+     }
+ 
+@@ -515,7 +577,7 @@
+             soundboard = sb;
+             this.updateSoundboardTable();
+             this.currentSoundboardFile = jsonfile;
+-            this.setTitle("EXP Soundboard vers. 0.5 | " + this.currentSoundboardFile.getName());
++            this.setTitle(TITLE + "  \u2014  " + this.currentSoundboardFile.getName());
+         }
+     }
+ 
+@@ -570,6 +632,11 @@
+         prefs.putFloat("primaryOutputGain", AudioManager.getFirstOutputGain());
+         prefs.putFloat("secondaryOutputGain", AudioManager.getSecondOutputGain());
+         prefs.putFloat("micInjectorOutputGain", Utils.getMicInjectorGain());
++        // DISENO: recordar el tamano de la ventana entre sesiones.
++        if ((this.getExtendedState() & Frame.MAXIMIZED_BOTH) == 0) {
++            prefs.putInt("windowWidth", this.getWidth());
++            prefs.putInt("windowHeight", this.getHeight());
++        }
+     }
+ 
+     private void loadPrefs() {
+@@ -626,6 +693,12 @@
+         Utils.setOverlapSameClipWhilePlaying(prefs.getBoolean("OverlapClipsWhilePlaying", true));
+         int overlapKey = prefs.getInt("OverlapClipsKey", 36);
+         Utils.setOverlapSwitchKey(overlapKey);
++        int savedWidth = prefs.getInt("windowWidth", 0);
++        int savedHeight = prefs.getInt("windowHeight", 0);
++        if (savedWidth >= 460 && savedHeight >= 520) {
++            this.setSize(savedWidth, savedHeight);
++            this.setLocationRelativeTo(null);
++        }
+     }
+ 
+     private void exit() {
+@@ -655,10 +728,22 @@
+ 
+     private void macInit() {
+         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
+-            Application application = Application.getApplication();
+-            application.setDockIconImage(icon);
+             System.setProperty("apple.laf.useScreenMenuBar", "true");
+             System.setProperty("com.apple.mrj.application.apple.menu.about.name", "EXP Soundboard");
++            // FIX: com.apple.eawt desaparecio del JDK en Java 9, asi que en un macOS con Java
++            // moderno la aplicacion ni siquiera abria. El icono del dock es opcional.
++            try {
++                Application application = Application.getApplication();
++                application.setDockIconImage(icon);
++            }
++            catch (Throwable t) {
++                try {
++                    Taskbar.getTaskbar().setIconImage(icon);
++                }
++                catch (Throwable ignored) {
++                    // sin icono en el dock
++                }
++            }
+         }
+     }
+ 
+Only in build/src/exp/gui: Ui.java
+diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/AudioManager.java build/src/exp/soundboard/AudioManager.java
+--- work/src-decompiled/exp/soundboard/AudioManager.java	2026-08-12 00:22:26.872105300 -0600
++++ build/src/exp/soundboard/AudioManager.java	2026-08-12 00:34:03.126900900 -0600
+@@ -13,6 +13,7 @@
+ import javax.sound.sampled.Mixer;
+ import javax.sound.sampled.SourceDataLine;
+ import javax.swing.JOptionPane;
++import javax.swing.SwingUtilities;
+ 
+ public class AudioManager {
+     private static final int INTERNAL_BUFFER_SIZE = 8192;
+@@ -22,39 +23,89 @@
+     private boolean useSecondary = false;
+     private static float firstOutputGain;
+     private static float secondOutputGain;
++    private static volatile String lastWarning = null;
+ 
+     void playSoundClip(File file, boolean halfspeed) {
+         AudioFormat format = halfspeed ? Utils.modifiedPlaybackFormat : Utils.format;
+         if (file.exists() && file.canRead()) {
+-            FloatControl gain;
+             SourceDataLine primarySpeaker = null;
+             SourceDataLine secondarySpeaker = null;
++            if (this.primaryOutput == null) {
++                // FIX: sin mixer primario seleccionado se producia un NullPointerException.
++                warnOnce("No primary output device is selected. Choose one in the main window.", "No Output Device");
++                return;
++            }
+             try {
+                 primarySpeaker = (SourceDataLine)this.primaryOutput.getLine(this.standardDataLineInfo);
+                 primarySpeaker.open(format, 8192);
+-                gain = (FloatControl)primarySpeaker.getControl(FloatControl.Type.MASTER_GAIN);
+-                gain.setValue(firstOutputGain);
++                applyGain(primarySpeaker, firstOutputGain);
+                 primarySpeaker.start();
+             }
+-            catch (LineUnavailableException ex) {
+-                JOptionPane.showMessageDialog(null, "Selected Output Line: Primary Speaker is currently unavailable.", "Line Unavailable Exception", 0);
++            catch (LineUnavailableException | IllegalArgumentException ex) {
++                closeQuietly(primarySpeaker);
++                primarySpeaker = null;
++                warnOnce("Selected Output Line: Primary Speaker is currently unavailable.", "Line Unavailable Exception");
++            }
++            // FIX: sin linea primaria abierta no se puede reproducir; antes se seguia adelante
++            // y ClipPlayer petaba con NullPointerException al escribir y al cerrar.
++            if (primarySpeaker == null) {
++                return;
+             }
+             if (this.secondaryOutput != null && this.useSecondary) {
+                 try {
+                     secondarySpeaker = (SourceDataLine)this.secondaryOutput.getLine(this.standardDataLineInfo);
+                     secondarySpeaker.open(format, 8192);
+-                    gain = (FloatControl)secondarySpeaker.getControl(FloatControl.Type.MASTER_GAIN);
+-                    gain.setValue(secondOutputGain);
++                    applyGain(secondarySpeaker, secondOutputGain);
+                     secondarySpeaker.start();
+                 }
+-                catch (LineUnavailableException ex) {
+-                    JOptionPane.showMessageDialog(null, "Selected Output Line: Secondary Speaker is currently unavailable.", "Line Unavailable Exception", 0);
++                catch (LineUnavailableException | IllegalArgumentException ex) {
++                    closeQuietly(secondarySpeaker);
++                    secondarySpeaker = null;
++                    warnOnce("Selected Output Line: Secondary Speaker is currently unavailable.", "Line Unavailable Exception");
+                 }
+             }
+             Utils.playNewSoundClipThreaded(file, primarySpeaker, secondarySpeaker);
+         }
+     }
+ 
++    /** FIX: MASTER_GAIN no existe en todas las lineas; antes lanzaba IllegalArgumentException. */
++    private static void applyGain(SourceDataLine line, float value) {
++        if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
++            FloatControl gain = (FloatControl)line.getControl(FloatControl.Type.MASTER_GAIN);
++            float clamped = Math.max(gain.getMinimum(), Math.min(gain.getMaximum(), value));
++            gain.setValue(clamped);
++        }
++    }
++
++    private static void closeQuietly(SourceDataLine line) {
++        if (line != null) {
++            try {
++                line.close();
++            }
++            catch (RuntimeException ignored) {
++                // nada que hacer al cerrar
++            }
++        }
++    }
++
++    /** FIX: evita una cascada de dialogos modales al mantener pulsada una hotkey. */
++    private static void warnOnce(String message, String title) {
++        if (message.equals(lastWarning)) {
++            return;
++        }
++        lastWarning = message;
++        final String msg = message;
++        final String ttl = title;
++        SwingUtilities.invokeLater(new Runnable(){
++
++            @Override
++            public void run() {
++                JOptionPane.showMessageDialog(null, msg, ttl, JOptionPane.ERROR_MESSAGE);
++                lastWarning = null;
++            }
++        });
++    }
++
+     public synchronized void setPrimaryOutputMixer(String mixerName) {
+         String[] mixers;
+         String[] stringArray = mixers = Utils.getMixerNames(this.standardDataLineInfo);
+diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/GlobalKeyMacroListener.java build/src/exp/soundboard/GlobalKeyMacroListener.java
+--- work/src-decompiled/exp/soundboard/GlobalKeyMacroListener.java	2026-08-12 00:22:26.811692200 -0600
++++ build/src/exp/soundboard/GlobalKeyMacroListener.java	2026-08-12 00:25:53.016171900 -0600
+@@ -95,7 +95,7 @@
+         } else {
+             int matches;
+             int highest = 0;
+-            ArrayList potentialCopy = new ArrayList(potential);
++            ArrayList<SoundboardEntry> potentialCopy = new ArrayList<SoundboardEntry>(potential);
+             for (SoundboardEntry p : potentialCopy) {
+                 matches = p.matchesHowManyPressed(this.pressedKeys);
+                 if (matches > highest) {
+@@ -105,7 +105,7 @@
+                 if (matches >= highest) continue;
+                 potential.remove(p);
+             }
+-            potentialCopy = new ArrayList(potential);
++            potentialCopy = new ArrayList<SoundboardEntry>(potential);
+             for (SoundboardEntry p : potentialCopy) {
+                 matches = p.matchesHowManyPressed(this.pressedKeys);
+                 if (matches >= highest) continue;
+diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/MicInjector.java build/src/exp/soundboard/MicInjector.java
+--- work/src-decompiled/exp/soundboard/MicInjector.java	2026-08-12 00:22:26.789922400 -0600
++++ build/src/exp/soundboard/MicInjector.java	2026-08-12 00:34:03.126900900 -0600
+@@ -38,7 +38,7 @@
+     private boolean fadeOut;
+     int userVolume;
+     private boolean muted = false;
+-    private boolean run = false;
++    private volatile boolean run = false; // FIX: lo escribe stopRunning() desde el EDT
+     private long nextDrift;
+     private final long driftinterval = 1800000L;
+ 
+@@ -93,6 +93,11 @@
+         if (this.targetDataLine != null) {
+             this.clearLines();
+         }
++        // FIX: sin mixer seleccionado se producia un NullPointerException.
++        if (this.inputMixer == null || this.outputMixer == null) {
++            JOptionPane.showMessageDialog(null, "Mic Injector: input or output device not selected.", "Mic Injector", JOptionPane.WARNING_MESSAGE);
++            return;
++        }
+         try {
+             this.targetDataLine = (TargetDataLine)this.inputMixer.getLine(targetDataLineInfo);
+             this.inputLineName = this.inputMixer.getMixerInfo().getName();
+@@ -111,8 +116,14 @@
+         catch (LineUnavailableException ex) {
+             JOptionPane.showMessageDialog(null, "Selected Output Line " + this.outputLineName + " is currently unavailable.", "Line Unavailable Exception", 0);
+         }
+-        this.gainControl = (FloatControl)this.sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN);
+-        this.gainControl.setValue(gainLevel);
++        // FIX: si alguna de las dos lineas no llego a abrirse, aqui saltaba un NullPointerException.
++        if (this.sourceDataLine == null || this.targetDataLine == null) {
++            return;
++        }
++        if (this.sourceDataLine.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
++            this.gainControl = (FloatControl)this.sourceDataLine.getControl(FloatControl.Type.MASTER_GAIN);
++            this.gainControl.setValue(gainLevel);
++        }
+         System.out.println(this.targetDataLine.getLineInfo().toString());
+         System.out.println("Buffer size is " + this.targetDataLine.getBufferSize());
+         this.fadeOut = true;
+@@ -130,16 +141,29 @@
+     }
+ 
+     private synchronized void clearLines() {
+-        this.targetDataLine.close();
+-        this.sourceDataLine.close();
++        // FIX: null-safe; ademas ahora se llama tambien al parar el hilo, para no dejar el
++        // microfono y el cable virtual ocupados indefinidamente.
++        if (this.targetDataLine != null) {
++            this.targetDataLine.close();
++            this.targetDataLine = null;
++        }
++        if (this.sourceDataLine != null) {
++            this.sourceDataLine.close();
++            this.sourceDataLine = null;
++        }
++        this.gainControl = null;
+     }
+ 
+     protected void read() {
+-        this.bytesRead = this.targetDataLine.read(this.inputBuffer, 0, 512);
++        TargetDataLine line = this.targetDataLine;
++        this.bytesRead = line == null ? 0 : line.read(this.inputBuffer, 0, 512);
+     }
+ 
+     protected void write() {
+-        this.sourceDataLine.write(this.inputBuffer, 0, this.bytesRead);
++        SourceDataLine line = this.sourceDataLine;
++        if (line != null && this.bytesRead > 0) {
++            line.write(this.inputBuffer, 0, this.bytesRead);
++        }
+     }
+ 
+     private void writeFadeIn() {
+@@ -172,13 +196,36 @@
+     @Override
+     public void run() {
+         this.setupGate();
++        // FIX: si las lineas no abrieron, el bucle giraba lanzando NullPointerException sin fin.
++        if (this.targetDataLine == null || this.sourceDataLine == null) {
++            this.run = false;
++            return;
++        }
+         this.run = true;
+         this.nextDrift = System.currentTimeMillis() + 1800000L;
+-        while (this.run) {
+-            this.read();
+-            this.write();
+-            if (System.currentTimeMillis() <= this.nextDrift) continue;
+-            this.driftReset();
++        try {
++            while (this.run) {
++                this.read();
++                if (this.bytesRead > 0) {
++                    this.write();
++                } else {
++                    // FIX: cuando la linea se para o se desconecta el dispositivo, read()
++                    // devuelve 0 sin bloquear y el bucle consumia un nucleo entero al 100%.
++                    try {
++                        Thread.sleep(5L);
++                    }
++                    catch (InterruptedException e) {
++                        Thread.currentThread().interrupt();
++                        break;
++                    }
++                }
++                if (System.currentTimeMillis() <= this.nextDrift) continue;
++                this.driftReset();
++            }
++        }
++        finally {
++            this.run = false;
++            this.clearLines();
+         }
+     }
+ 
+@@ -302,6 +349,9 @@
+     private synchronized void driftReset() {
+         if (System.currentTimeMillis() > this.nextDrift) {
+             this.nextDrift = System.currentTimeMillis() + 1800000L;
++            if (this.targetDataLine == null || this.sourceDataLine == null) {
++                return;
++            }
+             try {
+                 this.targetDataLine.open(signedFormat, 8192);
+                 this.targetDataLine.start();
+diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/UpdateChecker.java build/src/exp/soundboard/UpdateChecker.java
+--- work/src-decompiled/exp/soundboard/UpdateChecker.java	2026-08-12 00:22:26.985146100 -0600
++++ build/src/exp/soundboard/UpdateChecker.java	2026-08-12 00:34:03.126900900 -0600
+@@ -9,6 +9,7 @@
+ import java.io.InputStreamReader;
+ import java.net.MalformedURLException;
+ import java.net.URL;
++import java.net.URLConnection;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ import javax.swing.SwingUtilities;
+@@ -21,8 +22,11 @@
+         boolean internetconnection = false;
+         BufferedReader reader = null;
+         try {
+-            URL url = new URL(updatelink);
+-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
++            // FIX: sin timeouts, un servidor que no responde dejaba el hilo colgado indefinidamente.
++            URLConnection connection = new URL(updatelink).openConnection();
++            connection.setConnectTimeout(5000);
++            connection.setReadTimeout(5000);
++            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+             internetconnection = true;
+         }
+         catch (MalformedURLException ex) {
+@@ -76,8 +80,11 @@
+         boolean internetconnection = false;
+         BufferedReader reader = null;
+         try {
+-            URL url = new URL(updatelink);
+-            reader = new BufferedReader(new InputStreamReader(url.openStream()));
++            // FIX: sin timeouts, un servidor que no responde dejaba el hilo colgado indefinidamente.
++            URLConnection connection = new URL(updatelink).openConnection();
++            connection.setConnectTimeout(5000);
++            connection.setReadTimeout(5000);
++            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+             internetconnection = true;
+         }
+         catch (MalformedURLException ex) {
+diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/Utils.java build/src/exp/soundboard/Utils.java
+--- work/src-decompiled/exp/soundboard/Utils.java	2026-08-12 00:22:26.938120700 -0600
++++ build/src/exp/soundboard/Utils.java	2026-08-12 00:34:03.126900900 -0600
+@@ -15,12 +15,14 @@
+ import java.awt.AWTException;
+ import java.awt.Robot;
+ import java.awt.event.KeyEvent;
++import java.io.BufferedInputStream;
+ import java.io.File;
+ import java.io.IOException;
+ import java.io.InputStream;
+ import java.util.ArrayList;
+ import java.util.Collection;
+ import java.util.concurrent.ConcurrentHashMap;
++import java.util.concurrent.atomic.AtomicInteger;
+ import java.util.prefs.Preferences;
+ import javax.sound.sampled.AudioFormat;
+ import javax.sound.sampled.AudioInputStream;
+@@ -40,7 +42,13 @@
+     private static ThreadGroup clipPlayerThreadGroup = new ThreadGroup("Clip Player Group");
+     private static final String prefsName = "Expenosa's Soundboard";
+     public static final Preferences prefs = Preferences.userRoot().node("Expenosa's Soundboard");
+-    private static boolean PLAYALL = true;
++    /**
++     * FIX: antes era un boolean estatico no volatil (PLAYALL). "Stop All" lo ponia a false,
++     * pero cualquier clip que arrancase justo despues lo volvia a poner a true y revivia
++     * los clips que se estaban parando. Ahora cada clip captura la generacion actual y
++     * "Stop All" solo incrementa el contador: los clips ya iniciados mueren, los nuevos no.
++     */
++    private static final AtomicInteger playGeneration = new AtomicInteger();
+     public static final int BUFFERSIZE = 2048;
+     public static final float STANDARDSAMPLERATE = 44100.0f;
+     private static float modifiedPlaybackSpeed;
+@@ -119,7 +127,7 @@
+     }
+ 
+     public static void stopAllClips() {
+-        PLAYALL = false;
++        playGeneration.incrementAndGet();
+         Utils.zeroCurrentClipCount();
+     }
+ 
+@@ -167,9 +175,24 @@
+             ++n2;
+         }
+         if (inputexists && outputexists) {
+-            micInjector.setInputMixer(inputMixerName);
+-            micInjector.setOutputMixer(outputMixerName);
+-            micInjector.start();
++            // FIX: un Thread no se puede volver a arrancar. Al desactivar y reactivar el
++            // Mic Injector saltaba IllegalThreadStateException y no volvia a funcionar hasta
++            // reiniciar la aplicacion. Ahora se crea una instancia nueva en cada arranque.
++            MicInjector previous = micInjector;
++            if (previous.isAlive()) {
++                try {
++                    previous.join(2000L);
++                }
++                catch (InterruptedException e) {
++                    Thread.currentThread().interrupt();
++                }
++            }
++            MicInjector fresh = new MicInjector();
++            fresh.setGain(MicInjector.getGain());
++            fresh.setInputMixer(inputMixerName);
++            fresh.setOutputMixer(outputMixerName);
++            micInjector = fresh;
++            fresh.start();
+         }
+     }
+ 
+@@ -190,7 +213,11 @@
+     }
+ 
+     public static void startMp3Decoder() {
+-        InputStream loaderfile = ClipPlayer.class.getResourceAsStream("loader.mp3");
++        // FIX: AudioSystem necesita un stream con mark/reset. Al leer el recurso directamente
++        // del JAR llega un InflaterInputStream que no lo soporta, asi que el precalentamiento
++        // del decodificador MP3 fallaba siempre con "mark/reset not supported" y el primer
++        // clip MP3 sufria el retardo de cargar el decodificador.
++        InputStream loaderfile = new BufferedInputStream(ClipPlayer.class.getResourceAsStream("loader.mp3"));
+         try {
+             AudioSystem.getAudioFileFormat(loaderfile);
+             AudioInputStream stream = AudioSystem.getAudioInputStream(loaderfile);
+@@ -473,10 +500,10 @@
+         int n2 = 0;
+         while (n2 < n) {
+             Thread thread = threadArray[n2];
+-            System.out.println("thread name: " + thread.getName());
+-            if (filepath.equals(thread.getName())) {
+-                ClipPlayer cp = (ClipPlayer)thread;
+-                cp.stopPlaying();
++            // FIX: enumerate() puede dejar huecos a null (NPE) y el cast directo podia lanzar
++            // ClassCastException si el grupo contenia algun hilo de otro tipo.
++            if (thread instanceof ClipPlayer && filepath.equals(thread.getName())) {
++                ((ClipPlayer)thread).stopPlaying();
+                 stopped = true;
+             }
+             ++n2;
+@@ -489,7 +516,7 @@
+         File file;
+         SourceDataLine primarySpeaker = null;
+         SourceDataLine secondarySpeaker = null;
+-        boolean playing = true;
++        volatile boolean playing = true; // FIX: lo escribe otro hilo (stopFilePlaying)
+ 
+         public ClipPlayer(File file, SourceDataLine primarySpeaker, SourceDataLine secondarySpeaker) {
+             super(clipPlayerThreadGroup, file.toString());
+@@ -509,7 +536,7 @@
+         }
+ 
+         private void playSoundClip(File file, SourceDataLine primarySpeaker, SourceDataLine secondarySpeaker) {
+-            PLAYALL = true;
++            final int myGeneration = playGeneration.get();
+             AudioInputStream clip = null;
+             AudioFormat clipformat = null;
+             try {
+@@ -530,7 +557,7 @@
+                 Utils.incrementCurrentClipCount();
+                 byte[] buffer = new byte[2048];
+                 int bytesRead = 0;
+-                while (this.playing && PLAYALL) {
++                while (this.playing && myGeneration == playGeneration.get()) {
+                     try {
+                         bytesRead = clip.read(buffer, 0, 2048);
+                     }
