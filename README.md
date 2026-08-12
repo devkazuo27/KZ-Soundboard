@@ -22,6 +22,15 @@ preferencias. Un soundboard guardado con el 0.5 se abre aquí sin tocar nada.
 
 ---
 
+## Descargar
+
+En [releases](../../releases) hay dos formas de usarlo:
+
+- **`EXP-Soundboard-0.5.1-windows-x64.zip`** — para Windows, con un Java recortado dentro.
+  Descomprime y ejecuta `EXP Soundboard.exe`. **No necesita tener Java instalado.**
+- **`EXP-Soundboard-0.5.1.jar`** — para cualquier sistema con Java 17 o superior:
+  `java -jar "EXP-Soundboard-0.5.1.jar"`
+
 ## Compilar
 
 Requiere JDK 17 o superior. Las dependencias no están en el repositorio (ver
@@ -31,7 +40,13 @@ Requiere JDK 17 o superior. Las dependencias no están en el repositorio (ver
 tools/fetch-deps.sh          # trae las librerías (o pásale tu copia del JAR 0.5)
 bash build.sh                # compila y empaqueta -> dist/
 java -jar "dist/EXP Soundboard_051.jar"
+
+tools/build-exe.sh           # opcional: ejecutable de Windows -> build-exe/
 ```
+
+El ejecutable se genera con `jpackage` (JDK 14+) como *app-image*: una carpeta con el `.exe`
+y un runtime de Java recortado. No se genera instalador `.msi` porque eso necesita tener
+instalado [WiX Toolset](https://wixtoolset.org/).
 
 ## Qué se arregló
 

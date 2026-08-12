@@ -7,3 +7,6 @@ test-classes/
 staging/
 dist/
 *.class
+
+# Ejecutable de Windows generado por tools/build-exe.sh
+build-exe/

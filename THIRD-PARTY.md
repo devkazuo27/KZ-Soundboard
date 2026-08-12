@@ -52,6 +52,13 @@ conseguir su código fuente:
 Ninguno de estos componentes ha sido modificado en este rework. Si compilas tú el JAR con
 `build.sh` y lo redistribuyes, estas mismas obligaciones te aplican a ti.
 
+## Runtime de Java del ejecutable
+
+El `.zip` de Windows incluye un runtime de Java recortado con `jlink`, generado a partir de
+[Eclipse Temurin](https://adoptium.net/) (OpenJDK), bajo **GPL v2 con Classpath Exception**,
+que permite precisamente distribuirlo junto a una aplicación. Código fuente:
+(construido con Temurin 25.0.3) <https://github.com/adoptium/jdk25u> y <https://openjdk.org/>.
+
 ## Herramientas
 
 Los fuentes se recuperaron con [CFR](https://www.benf.org/other/cfr/) (MIT), que no se
