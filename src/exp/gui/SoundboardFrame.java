@@ -102,7 +102,7 @@ extends JFrame {
     public static boolean useMicInjector;
     public static final Image icon;
     public static JFileChooser filechooser;
-    private static final String PROJECT_URL = "https://github.com/devkazuo27/exp-soundboard-rework";
+    private static final String PROJECT_URL = "https://github.com/devkazuo27/KZ-Soundboard";
     private static final String ORIGINAL_URL = "https://sourceforge.net/projects/expsoundboard/";
     private final String useSecondaryKey = "useSecondSpeaker";
     private final String firstSpeakerKey = "firstSpeaker";

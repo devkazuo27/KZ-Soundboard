@@ -156,7 +156,7 @@ extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URI("https://github.com/devkazuo27/exp-soundboard-rework"));
+                    Desktop.getDesktop().browse(new URI("https://github.com/devkazuo27/KZ-Soundboard"));
                 }
                 catch (IOException e1) {
                     e1.printStackTrace();
