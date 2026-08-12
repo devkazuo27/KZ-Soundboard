@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Builds the Windows executable from the JAR, using jpackage (JDK 14+).
 #
-# Produces an "app image": a folder holding EXP Soundboard.exe and a trimmed Java runtime, so
+# Produces an "app image": a folder holding KZ Soundboard.exe and a trimmed Java runtime, so
 # it works on a Windows box with no Java installed and without needing the .jar.
 # It does not produce an .msi/.exe installer, because that requires WiX Toolset to be present.
 #

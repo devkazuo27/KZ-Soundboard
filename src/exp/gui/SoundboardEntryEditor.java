@@ -52,7 +52,7 @@ extends JFrame {
         this.soundboard = SoundboardFrame.soundboard;
         this.inputGetter = new NativeKeyInputGetter();
         this.setDefaultCloseOperation(2);
-        this.setTitle("Soundboard Entry Editor");
+        this.setTitle("KZ Soundboard : Entry Editor");
         this.setIconImage(SoundboardFrame.icon);
         JLabel lblSoundClip = new JLabel("Sound clip:");
         this.selectedSoundClipLabel = new JLabel("None selected");

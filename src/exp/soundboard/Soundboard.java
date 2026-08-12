@@ -149,7 +149,7 @@ public class Soundboard {
 
     public boolean hasSoundboardChanged() {
         if (!this.soundboardEntries.equals(soundboardEntriesClone)) {
-            System.out.println("Soundboard changed");
+            System.out.println("KZ Soundboard changed");
             return true;
         }
         return false;

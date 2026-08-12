@@ -795,10 +795,10 @@ extends JFrame {
             Soundboard savedFile;
             Gson gson;
             String savedjson;
-            if (this.currentSoundboardFile.exists() && !(savedjson = (gson = new Gson()).toJson((Object)(savedFile = Soundboard.loadFromJsonFile(this.currentSoundboardFile)))).equals(currentjson = gson.toJson((Object)soundboard)) && (option2 = JOptionPane.showConfirmDialog(null, "Soundboard has changed. Do you want to save?", "Save Reminder", 0)) == 0) {
+            if (this.currentSoundboardFile.exists() && !(savedjson = (gson = new Gson()).toJson((Object)(savedFile = Soundboard.loadFromJsonFile(this.currentSoundboardFile)))).equals(currentjson = gson.toJson((Object)soundboard)) && (option2 = JOptionPane.showConfirmDialog(null, "KZ Soundboard has changed. Do you want to save?", "Save Reminder", 0)) == 0) {
                 soundboard.saveAsJsonFile(this.currentSoundboardFile);
             }
-        } else if (soundboard.getSoundboardEntries().size() > 0 && (option = JOptionPane.showConfirmDialog(null, "Soundboard has not been saved. Do you want to save?", "Save Reminder", 0)) == 0) {
+        } else if (soundboard.getSoundboardEntries().size() > 0 && (option = JOptionPane.showConfirmDialog(null, "KZ Soundboard has not been saved. Do you want to save?", "Save Reminder", 0)) == 0) {
             this.fileSave();
         }
     }
@@ -839,7 +839,7 @@ extends JFrame {
 
         @Override
         public String getDescription() {
-            return ".json Soundboard save file";
+            return ".json KZ Soundboard save file";
         }
     }
 }

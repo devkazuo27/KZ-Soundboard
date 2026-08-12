@@ -48,7 +48,7 @@ diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/AudioLevelsFrame.java 
          this.micinjectorSlider.addChangeListener(new ChangeListener(){
 diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SettingsFrame.java src/exp/gui/SettingsFrame.java
 --- ../work/src-decompiled/exp/gui/SettingsFrame.java	2026-08-12 00:22:26.442018900 -0600
-+++ src/exp/gui/SettingsFrame.java	2026-08-12 10:47:48.070542700 -0600
++++ src/exp/gui/SettingsFrame.java	2026-08-12 11:02:56.975375800 -0600
 @@ -42,6 +42,7 @@
  import javax.swing.JFormattedTextField;
  import javax.swing.JFrame;
@@ -97,7 +97,7 @@ diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SettingsFrame.java src
              public void actionPerformed(ActionEvent e) {
                  try {
 -                    Desktop.getDesktop().browse(new URI("https://sourceforge.net/projects/expsoundboard/"));
-+                    Desktop.getDesktop().browse(new URI("https://github.com/devkazuo27/exp-soundboard-rework"));
++                    Desktop.getDesktop().browse(new URI("https://github.com/devkazuo27/KZ-Soundboard"));
                  }
                  catch (IOException e1) {
                      e1.printStackTrace();
@@ -258,7 +258,7 @@ diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SettingsFrame.java src
 Only in src/exp/gui: SoundPadRenderer.java
 diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SoundboardEntryEditor.java src/exp/gui/SoundboardEntryEditor.java
 --- ../work/src-decompiled/exp/gui/SoundboardEntryEditor.java	2026-08-12 00:22:26.535869600 -0600
-+++ src/exp/gui/SoundboardEntryEditor.java	2026-08-12 01:10:14.389816000 -0600
++++ src/exp/gui/SoundboardEntryEditor.java	2026-08-12 11:09:14.891402100 -0600
 @@ -13,6 +13,7 @@
  import exp.soundboard.SoundboardEntry;
  import exp.soundboard.Utils;
@@ -275,6 +275,15 @@ diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SoundboardEntryEditor.
  import javax.swing.JOptionPane;
  import javax.swing.JSeparator;
  import javax.swing.JTextField;
+@@ -50,7 +52,7 @@
+         this.soundboard = SoundboardFrame.soundboard;
+         this.inputGetter = new NativeKeyInputGetter();
+         this.setDefaultCloseOperation(2);
+-        this.setTitle("Soundboard Entry Editor");
++        this.setTitle("KZ Soundboard : Entry Editor");
+         this.setIconImage(SoundboardFrame.icon);
+         JLabel lblSoundClip = new JLabel("Sound clip:");
+         this.selectedSoundClipLabel = new JLabel("None selected");
 @@ -90,11 +92,11 @@
              @Override
              public void mousePressed(MouseEvent e) {
@@ -300,7 +309,7 @@ diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SoundboardEntryEditor.
          });
 diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SoundboardFrame.java src/exp/gui/SoundboardFrame.java
 --- ../work/src-decompiled/exp/gui/SoundboardFrame.java	2026-08-12 00:22:26.725047100 -0600
-+++ src/exp/gui/SoundboardFrame.java	2026-08-12 10:54:56.930334600 -0600
++++ src/exp/gui/SoundboardFrame.java	2026-08-12 11:09:14.943409200 -0600
 @@ -24,14 +24,19 @@
  import exp.soundboard.Utils;
  import java.awt.Color;
@@ -369,7 +378,7 @@ diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SoundboardFrame.java s
      public static boolean useMicInjector;
      public static final Image icon;
      public static JFileChooser filechooser;
-+    private static final String PROJECT_URL = "https://github.com/devkazuo27/exp-soundboard-rework";
++    private static final String PROJECT_URL = "https://github.com/devkazuo27/KZ-Soundboard";
 +    private static final String ORIGINAL_URL = "https://sourceforge.net/projects/expsoundboard/";
      private final String useSecondaryKey = "useSecondSpeaker";
      private final String firstSpeakerKey = "firstSpeaker";
@@ -946,7 +955,19 @@ diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SoundboardFrame.java s
      }
  
      private void exit() {
-@@ -655,10 +805,22 @@
+@@ -645,20 +795,32 @@
+             Soundboard savedFile;
+             Gson gson;
+             String savedjson;
+-            if (this.currentSoundboardFile.exists() && !(savedjson = (gson = new Gson()).toJson((Object)(savedFile = Soundboard.loadFromJsonFile(this.currentSoundboardFile)))).equals(currentjson = gson.toJson((Object)soundboard)) && (option2 = JOptionPane.showConfirmDialog(null, "Soundboard has changed. Do you want to save?", "Save Reminder", 0)) == 0) {
++            if (this.currentSoundboardFile.exists() && !(savedjson = (gson = new Gson()).toJson((Object)(savedFile = Soundboard.loadFromJsonFile(this.currentSoundboardFile)))).equals(currentjson = gson.toJson((Object)soundboard)) && (option2 = JOptionPane.showConfirmDialog(null, "KZ Soundboard has changed. Do you want to save?", "Save Reminder", 0)) == 0) {
+                 soundboard.saveAsJsonFile(this.currentSoundboardFile);
+             }
+-        } else if (soundboard.getSoundboardEntries().size() > 0 && (option = JOptionPane.showConfirmDialog(null, "Soundboard has not been saved. Do you want to save?", "Save Reminder", 0)) == 0) {
++        } else if (soundboard.getSoundboardEntries().size() > 0 && (option = JOptionPane.showConfirmDialog(null, "KZ Soundboard has not been saved. Do you want to save?", "Save Reminder", 0)) == 0) {
+             this.fileSave();
+         }
+     }
  
      private void macInit() {
          if (System.getProperty("os.name").toLowerCase().contains("mac")) {
@@ -972,6 +993,15 @@ diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SoundboardFrame.java s
          }
      }
  
+@@ -677,7 +839,7 @@
+ 
+         @Override
+         public String getDescription() {
+-            return ".json Soundboard save file";
++            return ".json KZ Soundboard save file";
+         }
+     }
+ }
 Only in src/exp/gui: Ui.java
 diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/UpdateConfirmFrame.java src/exp/gui/UpdateConfirmFrame.java
 --- ../work/src-decompiled/exp/gui/UpdateConfirmFrame.java	2026-08-12 00:22:26.560595500 -0600
@@ -1245,6 +1275,18 @@ diff -ru '--exclude=cache' ../work/src-decompiled/exp/soundboard/MicInjector.jav
              try {
                  this.targetDataLine.open(signedFormat, 8192);
                  this.targetDataLine.start();
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/soundboard/Soundboard.java src/exp/soundboard/Soundboard.java
+--- ../work/src-decompiled/exp/soundboard/Soundboard.java	2026-08-12 00:22:26.854055100 -0600
++++ src/exp/soundboard/Soundboard.java	2026-08-12 11:09:14.991314900 -0600
+@@ -149,7 +149,7 @@
+ 
+     public boolean hasSoundboardChanged() {
+         if (!this.soundboardEntries.equals(soundboardEntriesClone)) {
+-            System.out.println("Soundboard changed");
++            System.out.println("KZ Soundboard changed");
+             return true;
+         }
+         return false;
 diff -ru '--exclude=cache' ../work/src-decompiled/exp/soundboard/UpdateChecker.java src/exp/soundboard/UpdateChecker.java
 --- ../work/src-decompiled/exp/soundboard/UpdateChecker.java	2026-08-12 00:22:26.985146100 -0600
 +++ src/exp/soundboard/UpdateChecker.java	2026-08-12 10:27:28.555105400 -0600
@@ -1438,3 +1480,5 @@ diff -ru '--exclude=cache' ../work/src-decompiled/exp/soundboard/Utils.java src/
                      try {
                          bytesRead = clip.read(buffer, 0, 2048);
                      }
+Only in ../work/src-decompiled: org
+Only in ../work/src-decompiled: summary.txt
