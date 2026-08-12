@@ -1,13 +1,15 @@
-# EXP Soundboard 0.5.1 — rework
+# KZ Soundboard 1.0
 
-A modified version of **EXP Soundboard 0.5**, the Java desktop soundboard that
+A soundboard for Windows, macOS and Linux: bind your clips to global hotkeys and play them
+into your voice chat.
+
+It is a rework of **EXP Soundboard 0.5**, the Java desktop soundboard that
 [Expenosa](https://sourceforge.net/projects/expsoundboard/) released in December 2014 and has
-not touched since.
-
-The original **no longer starts on Java 9 or later**. This rework brings it back to life on a
-modern Java, fixes a dozen bugs in the audio engine and modernises the interface. It **adds no
-new features**: same windows, same settings, same `.json` format, same preferences. A
-soundboard saved with 0.5 opens here untouched.
+not touched since. The original **no longer starts on Java 9 or later**. This version brings it
+back to life on a modern Java, fixes a dozen bugs in the audio engine and rebuilds the
+interface around a grid of pads. Everything it does, it did before: same settings, same `.json`
+format, same preferences — a soundboard saved with 0.5 opens here untouched, and settings from
+an existing install are migrated automatically.
 
 > **Attribution.** This is a derivative work and is not official. The original application, its
 > name and its logo belong to **Expenosa** (© 2014), released under
@@ -26,10 +28,24 @@ soundboard saved with 0.5 opens here untouched.
 
 [Releases](../../releases) offers two ways to run it:
 
-- **`EXP-Soundboard-0.5.1-windows-x64.zip`** — for Windows, with a trimmed Java inside.
-  Unzip and run `EXP Soundboard.exe`. **No Java installation required.**
-- **`EXP-Soundboard-0.5.1.jar`** — for any system with Java 17 or later:
-  `java -jar "EXP-Soundboard-0.5.1.jar"`
+- **`KZ-Soundboard-1.0-windows-x64.zip`** — for Windows, with a trimmed Java inside.
+  Unzip and run `KZ Soundboard.exe`. **No Java installation required.**
+- **`KZ-Soundboard-1.0.jar`** — for any system with Java 17 or later:
+  `java -jar "KZ Soundboard.jar"`
+
+### Letting other people hear your clips
+
+On its own the soundboard plays through your speakers, which only you hear. To send clips into
+Discord, TeamSpeak or OBS you need a virtual audio device:
+[**VB-Audio Virtual Cable**](https://vb-audio.com/Cable/) (free, by VB-Audio).
+
+KZ Soundboard detects whether it is installed, offers to open the download page when it is
+not, and points the second output at **CABLE Input** by itself once it shows up. Then set your
+voice software to listen on **CABLE Output** as if it were a microphone. The check is also
+available any time under *Option → Virtual Audio Cable*.
+
+The installer is not bundled: VB-CABLE is donationware and its licence does not allow
+redistributing it.
 
 ## Building
 
@@ -39,7 +55,7 @@ Needs JDK 17 or later. Dependencies are not in the repository (see
 ```bash
 tools/fetch-deps.sh          # fetches the libraries (or pass it your copy of the 0.5 JAR)
 bash build.sh                # compiles and packages -> dist/
-java -jar "dist/EXP Soundboard_051.jar"
+java -jar "dist/KZ Soundboard.jar"
 
 tools/build-exe.sh           # optional: Windows executable -> build-exe/
 ```
@@ -93,10 +109,15 @@ thread, as they should be.
 - **Hard-coded colours and fonts gone.** `Color.WHITE`, `CYAN`, `RED`, `DARK_GRAY`, black
   separators and fixed-size `Tahoma` made any dark theme impossible. It all goes through
   `exp.gui.Ui` now, which derives them from the active theme.
+- **Clips are a grid of pads**, not a table row: click a pad to play it, right-click for edit
+  and remove. It is a `JList` in horizontal wrap mode, which brings the reflowing grid, the
+  selection and the keyboard navigation for free, with a custom renderer painting each pad.
 - **Main window reorganised**: the 14-column MigLayout with fixed pixel widths (which did not
   scale with display DPI) is now a single column with sections, real margins and font-derived
-  sizes. The table has banded rows, sensible proportions, and no longer starts with a phantom
-  empty row. Window size is remembered.
+  sizes. Window size is remembered.
+- **KZ identity**: black surfaces with the neon violet sampled from the logo (`#A301F4`) for
+  highlights and `#8B3DF0` for filled controls, which keeps white text on them above the 4.5:1
+  contrast ratio.
 
 ## Verifying
 
@@ -111,6 +132,8 @@ java -cp "test-classes;classes;resources;lib/*" exp.gui.ThemeSwitchTest
 - `HotkeyTest` — the native keyboard hook (JNativeHook, a 2013 binary) still receives key
   presses on Windows 11.
 - `ThemeSwitchTest` — switching theme on the fly throws nothing.
+- `VbCableTest` — lists the audio devices the application can see and reports whether the
+  virtual cable is detected; `VbCableTest shot <file.png>` renders the prompt to an image.
 - `exp.gui.DesignShots <dir> [light|dark]` renders each window to a PNG without showing it, and
   `exp.gui.DesignPreview [light|dark]` opens the main one with sample clips.
 
@@ -126,3 +149,6 @@ exists.
 
 [CC BY-SA 3.0](LICENSE), the same as the original. Third-party libraries each keep their own:
 see [`THIRD-PARTY.md`](THIRD-PARTY.md).
+
+The KZ name and logo belong to the author of this fork and are not covered by the original
+work's licence.

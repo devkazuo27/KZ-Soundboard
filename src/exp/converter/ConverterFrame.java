@@ -46,7 +46,7 @@ extends JFrame {
     public ConverterFrame() {
         this.setResizable(false);
         this.setDefaultCloseOperation(2);
-        this.setTitle("EXP soundboard : Audio Converter");
+        this.setTitle("KZ Soundboard : Audio Converter");
         this.setIconImage(SoundboardFrame.icon);
         JLabel lblInputFile = new JLabel("Input Files:");
         this.inputFileLabel = new JLabel("none selected");

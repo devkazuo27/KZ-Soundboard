@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -40,8 +41,32 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 
 public class Utils {
     private static ThreadGroup clipPlayerThreadGroup = new ThreadGroup("Clip Player Group");
-    private static final String prefsName = "Expenosa's Soundboard";
-    public static final Preferences prefs = Preferences.userRoot().node("Expenosa's Soundboard");
+    private static final String prefsName = "KZ Soundboard";
+    private static final String legacyPrefsName = "Expenosa's Soundboard";
+    public static final Preferences prefs = openPreferences();
+
+    /**
+     * The settings node was renamed along with the application. Anything saved under the old
+     * EXP Soundboard name is copied across the first time, so nobody loses their hotkeys,
+     * devices or last soundboard on upgrading.
+     */
+    private static Preferences openPreferences() {
+        Preferences node = Preferences.userRoot().node(prefsName);
+        try {
+            if (node.keys().length == 0 && Preferences.userRoot().nodeExists(legacyPrefsName)) {
+                Preferences legacy = Preferences.userRoot().node(legacyPrefsName);
+                for (String key : legacy.keys()) {
+                    node.put(key, legacy.get(key, ""));
+                }
+                node.flush();
+                System.out.println("Settings migrated from the previous EXP Soundboard install");
+            }
+        }
+        catch (BackingStoreException e) {
+            e.printStackTrace();
+        }
+        return node;
+    }
     /**
      * FIX: this used to be a non-volatile static boolean (PLAYALL). "Stop All" set it to
      * false, but any clip starting right afterwards set it back to true and resurrected the

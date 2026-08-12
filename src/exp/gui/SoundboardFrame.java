@@ -35,6 +35,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -55,7 +57,12 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.ListSelectionModel;
+import javax.swing.DefaultListModel;
+import javax.swing.BorderFactory;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
@@ -81,13 +88,13 @@ extends JFrame {
     private static final long serialVersionUID = 8934802095461138592L;
     final SoundboardFrame thisFrameInstance;
     public static final float VERSION = 0.5f;
-    private static final String TITLE = "EXP Soundboard 0.5.1";
+    private static final String TITLE = "KZ Soundboard 1.0";
     private JComboBox<String> secondarySpeakerComboBox;
     private JComboBox<String> primarySpeakerComboBox;
     public AudioManager audioManager;
     public static Soundboard soundboard;
     public File testFile;
-    private JTable table;
+    private JList<SoundboardEntry> padGrid;
     public static GlobalKeyMacroListener macroListener;
     static boolean updateCheck;
     public static String micInjectorInputMixerName;
@@ -95,6 +102,8 @@ extends JFrame {
     public static boolean useMicInjector;
     public static final Image icon;
     public static JFileChooser filechooser;
+    private static final String PROJECT_URL = "https://github.com/devkazuo27/exp-soundboard-rework";
+    private static final String ORIGINAL_URL = "https://sourceforge.net/projects/expsoundboard/";
     private final String useSecondaryKey = "useSecondSpeaker";
     private final String firstSpeakerKey = "firstSpeaker";
     private final String secondSpeakerKey = "secondSpeaker";
@@ -125,7 +134,7 @@ extends JFrame {
         micInjectorInputMixerName = "";
         micInjectorOutputMixerName = "";
         useMicInjector = false;
-        icon = new ImageIcon(SoundboardFrame.class.getResource("EXP logo.png")).getImage();
+        icon = Ui.logoImage();
     }
 
     public static void main(String[] args) {
@@ -232,45 +241,41 @@ extends JFrame {
                 Utils.setAutoPTThold(selected);
             }
         });
-        this.table = new JTable();
-        this.table.setSelectionMode(0);
-        this.table.setAutoCreateRowSorter(true);
-        this.table.setModel(new DefaultTableModel(new Object[][]{new Object[2]}, new String[]{"Sound Clip", "HotKeys"}){
-            private static final long serialVersionUID = 1L;
-            Class[] columnTypes;
-            boolean[] columnEditables;
-            {
-                this.columnTypes = new Class[]{String.class, String.class};
-                this.columnEditables = new boolean[2];
-            }
-
-            public Class getColumnClass(int columnIndex) {
-                return this.columnTypes[columnIndex];
-            }
+        // DESIGN: clips are a grid of pads rather than a table row. A JList in horizontal
+        // wrap mode gives the reflowing grid, the selection and the keyboard navigation for
+        // free; SoundPadRenderer paints each pad.
+        this.padGrid = new JList<SoundboardEntry>(new DefaultListModel<SoundboardEntry>());
+        this.padGrid.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+        this.padGrid.setVisibleRowCount(-1);
+        this.padGrid.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.padGrid.setFixedCellWidth(SoundPadRenderer.PAD_WIDTH);
+        this.padGrid.setFixedCellHeight(SoundPadRenderer.PAD_HEIGHT);
+        this.padGrid.setCellRenderer(new SoundPadRenderer());
+        this.padGrid.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
+        this.padGrid.addMouseListener(new MouseAdapter(){
 
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return this.columnEditables[column];
+            public void mousePressed(MouseEvent e) {
+                int index = SoundboardFrame.this.padGrid.locationToIndex(e.getPoint());
+                if (index < 0 || !SoundboardFrame.this.padGrid.getCellBounds(index, index).contains(e.getPoint())) {
+                    SoundboardFrame.this.padGrid.clearSelection();
+                    return;
+                }
+                SoundboardFrame.this.padGrid.setSelectedIndex(index);
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    SoundboardFrame.this.padMenu().show(SoundboardFrame.this.padGrid, e.getX(), e.getY());
+                } else if (SwingUtilities.isLeftMouseButton(e)) {
+                    SoundboardFrame.this.playSelected();
+                }
             }
         });
-        scrollPane.setViewportView(this.table);
+        scrollPane.setViewportView(this.padGrid);
         JButton btnRemove = new JButton("Remove");
         btnRemove.addActionListener(new ActionListener(){
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                int selected = SoundboardFrame.this.table.getSelectedRow();
-                if (selected > -1) {
-                    int index = SoundboardFrame.this.getSelectedEntryIndex();
-                    soundboard.removeEntry(index);
-                    SoundboardFrame.this.updateSoundboardTable();
-                    if (index >= SoundboardFrame.this.table.getRowCount()) {
-                        --index;
-                    }
-                    if (index >= 0) {
-                        SoundboardFrame.this.table.setRowSelectionInterval(index, index);
-                    }
-                }
+                SoundboardFrame.this.removeSelected();
             }
         });
         JButton btnEdit = new JButton("Edit");
@@ -278,13 +283,7 @@ extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                int selected = SoundboardFrame.this.table.getSelectedRow();
-                if (selected > -1) {
-                    int index = SoundboardFrame.this.getSelectedEntryIndex();
-                    System.out.println("index " + index);
-                    SoundboardEntry entry = soundboard.getEntry(index);
-                    new SoundboardEntryEditor(SoundboardFrame.this.thisFrameInstance, entry);
-                }
+                SoundboardFrame.this.editSelected();
             }
         });
         JButton btnPlay = new JButton("Play");
@@ -292,34 +291,20 @@ extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                int selected = SoundboardFrame.this.table.getSelectedRow();
-                if (selected > -1) {
-                    int index = SoundboardFrame.this.getSelectedEntryIndex();
-                    SoundboardEntry entry = soundboard.getEntry(index);
-                    if (macroListener.isSpeedModKeyHeld()) {
-                        entry.play(SoundboardFrame.this.audioManager, true);
-                    } else {
-                        entry.play(SoundboardFrame.this.audioManager, false);
-                    }
-                }
+                SoundboardFrame.this.playSelected();
             }
         });
         // ------------------------------------------------------------ DESIGN
         // A single column with separate sections, real margins, and sizes derived from the
         // font instead of fixed pixel columns (which do not scale with the display DPI).
-        this.table.setRowHeight(26);
-        this.table.setShowGrid(false);
-        this.table.setIntercellSpacing(new Dimension(0, 0));
-        this.table.setFillsViewportHeight(true);
-        this.table.getTableHeader().setReorderingAllowed(false);
-        // DESIGN: the header was centred while the data below it was left-aligned.
-        TableCellRenderer headerRenderer = this.table.getTableHeader().getDefaultRenderer();
-        if (headerRenderer instanceof DefaultTableCellRenderer) {
-            ((DefaultTableCellRenderer)headerRenderer).setHorizontalAlignment(SwingConstants.LEADING);
-        }
+        this.padGrid.setToolTipText("Click a pad to play it, right-click for more");
         Ui.styleTableContainer(scrollPane);
 
         btnAdd.setToolTipText("Add a sound clip and assign hotkeys to it");
+        // DESIGN: Add is the primary action, so it carries the KZ accent.
+        btnAdd.putClientProperty("JButton.buttonType", "default");
+        btnAdd.setBackground(Ui.ACCENT);
+        btnAdd.setForeground(java.awt.Color.WHITE);
         btnRemove.setToolTipText("Remove the selected clip");
         btnEdit.setToolTipText("Change the file or hotkeys of the selected clip");
         btnPlay.setToolTipText("Play the selected clip");
@@ -347,7 +332,8 @@ extends JFrame {
         options.add(this.autoPptCheckBox, "align right");
 
         Container content = this.getContentPane();
-        content.setLayout((LayoutManager)new MigLayout("insets 14, gap 10, fillx, wrap 1", "[grow,fill]", "[grow,fill][][][][][]"));
+        content.setLayout((LayoutManager)new MigLayout("insets 14, gap 10, fillx, wrap 1", "[grow,fill]", "[][grow,fill][][][][][]"));
+        content.add(Ui.brandHeader(), "growx");
         content.add(scrollPane, "grow");
         content.add(toolbar, "growx");
         content.add(Ui.section("Output devices"), "growx, gaptop 6");
@@ -402,20 +388,25 @@ extends JFrame {
         mnFile.add(mntmSaveAs);
         JSeparator separator_3 = new JSeparator();
         mnFile.add(separator_3);
-        JMenuItem mntmProjectPage = new JMenuItem("Sourceforge Page");
+        JMenuItem mntmProjectPage = new JMenuItem("GitHub Page");
         mntmProjectPage.addActionListener(new ActionListener(){
 
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                try {
-                    Desktop.getDesktop().browse(new URI("https://sourceforge.net/projects/expsoundboard/"));
-                }
-                catch (IOException | URISyntaxException e) {
-                    e.printStackTrace();
-                }
+                SoundboardFrame.this.browse(PROJECT_URL);
             }
         });
         mnFile.add(mntmProjectPage);
+        // The licence of the original work requires keeping the credit reachable.
+        JMenuItem mntmOriginal = new JMenuItem("Original project by Expenosa");
+        mntmOriginal.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                SoundboardFrame.this.browse(ORIGINAL_URL);
+            }
+        });
+        mnFile.add(mntmOriginal);
         JSeparator separator_1 = new JSeparator();
         mnFile.add(separator_1);
         JMenuItem mntmQuit = new JMenuItem("Quit");
@@ -472,6 +463,22 @@ extends JFrame {
         mnEdit.add(mntmAudioLevels);
         JSeparator separator_2 = new JSeparator();
         mnEdit.add(separator_2);
+        JMenuItem mntmVirtualCable = new JMenuItem("Virtual Audio Cable\u2026");
+        mntmVirtualCable.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (VbCable.promptIfMissing(SoundboardFrame.this.thisFrameInstance, true)) {
+                    JOptionPane.showMessageDialog(SoundboardFrame.this.thisFrameInstance,
+                            "VB-Audio Virtual Cable is installed.\n\n"
+                            + "Point the second output at \"CABLE Input\" and have your voice "
+                            + "software listen on \"CABLE Output\".",
+                            "Virtual audio cable", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
+        mnEdit.add(mntmVirtualCable);
+
         JMenuItem mntmAudioConverter = new JMenuItem("Audio Converter");
         mntmAudioConverter.addActionListener(new ActionListener(){
 
@@ -493,36 +500,94 @@ extends JFrame {
         GlobalScreen.getInstance().addNativeKeyListener((NativeKeyListener)macroListener);
         this.setLocationRelativeTo(null);
         this.loadPrefs();
-    }
-
-    public void updateSoundboardTable() {
-        Object[][] entryArray = soundboard.getEntriesAsObjectArrayForTable();
-        this.table.setModel(new DefaultTableModel(entryArray, new String[]{"Sound Clip", "HotKeys", "File Locations", "Index"}){
-            private static final long serialVersionUID = 1L;
-            Class[] columnTypes;
-            boolean[] columnEditables;
-            {
-                this.columnTypes = new Class[]{String.class, String.class, String.class, Integer.TYPE};
-                this.columnEditables = new boolean[4];
-            }
-
-            public Class getColumnClass(int columnIndex) {
-                return this.columnTypes[columnIndex];
-            }
+        // Offer the virtual cable once, after the window is up: without it the second output
+        // and the Mic Injector have nowhere useful to point.
+        SwingUtilities.invokeLater(new Runnable(){
 
             @Override
-            public boolean isCellEditable(int row, int column) {
-                return this.columnEditables[column];
+            public void run() {
+                VbCable.promptIfMissing(SoundboardFrame.this.thisFrameInstance, false);
             }
         });
-        TableColumnModel columnmod = this.table.getColumnModel();
-        // DESIGN: the clip name is what gets read most, so give it more room than the keys.
-        columnmod.getColumn(0).setPreferredWidth(300);
-        columnmod.getColumn(1).setPreferredWidth(180);
-        columnmod.getColumn(3).setMinWidth(0);
-        columnmod.getColumn(3).setMaxWidth(0);
-        columnmod.getColumn(3).setWidth(0);
-        this.table.removeColumn(columnmod.getColumn(2));
+    }
+
+    /** Rebuilds the pad grid from the soundboard, keeping the selection where possible. */
+    public void updateSoundboardTable() {
+        int previous = this.padGrid.getSelectedIndex();
+        DefaultListModel<SoundboardEntry> model = new DefaultListModel<SoundboardEntry>();
+        for (SoundboardEntry entry : soundboard.getSoundboardEntries()) {
+            model.addElement(entry);
+        }
+        this.padGrid.setModel(model);
+        if (previous >= 0 && previous < model.size()) {
+            this.padGrid.setSelectedIndex(previous);
+        }
+    }
+
+    /** Context menu of a pad. The toolbar buttons do exactly the same on the selection. */
+    private JPopupMenu padMenu() {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem play = new JMenuItem("Play");
+        play.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SoundboardFrame.this.playSelected();
+            }
+        });
+        JMenuItem edit = new JMenuItem("Edit\u2026");
+        edit.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SoundboardFrame.this.editSelected();
+            }
+        });
+        JMenuItem remove = new JMenuItem("Remove");
+        remove.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                SoundboardFrame.this.removeSelected();
+            }
+        });
+        menu.add(play);
+        menu.add(edit);
+        menu.addSeparator();
+        menu.add(remove);
+        return menu;
+    }
+
+    private void playSelected() {
+        SoundboardEntry entry = this.selectedEntry();
+        if (entry != null) {
+            entry.play(this.audioManager, macroListener.isSpeedModKeyHeld());
+        }
+    }
+
+    private void editSelected() {
+        SoundboardEntry entry = this.selectedEntry();
+        if (entry != null) {
+            new SoundboardEntryEditor(this.thisFrameInstance, entry);
+        }
+    }
+
+    private void removeSelected() {
+        int index = this.padGrid.getSelectedIndex();
+        if (index < 0) {
+            return;
+        }
+        soundboard.removeEntry(index);
+        this.updateSoundboardTable();
+        int count = this.padGrid.getModel().getSize();
+        if (count > 0) {
+            this.padGrid.setSelectedIndex(Math.min(index, count - 1));
+        }
+    }
+
+    private SoundboardEntry selectedEntry() {
+        int index = this.padGrid.getSelectedIndex();
+        return index < 0 ? null : soundboard.getEntry(index);
     }
 
     private void fileNew() {
@@ -595,8 +660,7 @@ extends JFrame {
     }
 
     private int getSelectedEntryIndex() {
-        int selected = this.table.getSelectedRow();
-        return (Integer)this.table.getValueAt(selected, 2);
+        return this.padGrid.getSelectedIndex();
     }
 
     public void updateMicInjector() {
@@ -605,6 +669,15 @@ extends JFrame {
             Utils.startMicInjector(micInjectorInputMixerName, micInjectorOutputMixerName);
         } else {
             Utils.stopMicInjector();
+        }
+    }
+
+    private void browse(String url) {
+        try {
+            Desktop.getDesktop().browse(new URI(url));
+        }
+        catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
         }
     }
 
@@ -647,6 +720,10 @@ extends JFrame {
         this.audioManager.setUseSecondary(useSecond);
         String firstspeaker = prefs.get("firstSpeaker", null);
         String secondspeaker = prefs.get("secondSpeaker", null);
+        if (secondspeaker == null) {
+            // First run with the cable already installed: point the second output at it.
+            secondspeaker = VbCable.findPlaybackDevice(Utils.getMixerNames(this.audioManager.standardDataLineInfo));
+        }
         if (firstspeaker != null) {
             this.primarySpeakerComboBox.setSelectedItem(firstspeaker);
             this.audioManager.setPrimaryOutputMixer(firstspeaker);
@@ -729,7 +806,7 @@ extends JFrame {
     private void macInit() {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "EXP Soundboard");
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "KZ Soundboard");
             // FIX: com.apple.eawt was removed from the JDK in Java 9, so on a macOS running a
             // modern Java the application would not even open. The dock icon is optional.
             try {

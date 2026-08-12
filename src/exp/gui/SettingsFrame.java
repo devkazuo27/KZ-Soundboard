@@ -156,7 +156,7 @@ extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URI("https://sourceforge.net/projects/expsoundboard/"));
+                    Desktop.getDesktop().browse(new URI("https://github.com/devkazuo27/exp-soundboard-rework"));
                 }
                 catch (IOException e1) {
                     e1.printStackTrace();
@@ -176,7 +176,7 @@ extends JFrame {
         this.vacComboBox = new JComboBox();
         JLabel lblUseMicInjector = new JLabel("*Use Mic Injector when your using a virtual audio cable as your input on other software.");
         lblUseMicInjector.setFont(UIManager.getFont("Label.font").deriveFont(Font.ITALIC));
-        JLabel lblVersion = new JLabel("Version: 0.5.1 \u2014 rework 2026");
+        JLabel lblVersion = new JLabel("KZ Soundboard 1.0");
         JLabel lblhalfSpeedPlayback = new JLabel("'Modified playback speed' combo key:");
         this.slowKeyTextField = new JTextField();
         this.slowKeyTextField.addFocusListener(new FocusAdapter(){

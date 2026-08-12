@@ -1,6 +1,15 @@
-diff -ru '--exclude=cache' work/src-decompiled/exp/converter/ConverterFrame.java repo/src/exp/converter/ConverterFrame.java
---- work/src-decompiled/exp/converter/ConverterFrame.java	2026-08-12 00:22:26.161947100 -0600
-+++ repo/src/exp/converter/ConverterFrame.java	2026-08-12 01:10:14.377389300 -0600
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/converter/ConverterFrame.java src/exp/converter/ConverterFrame.java
+--- ../work/src-decompiled/exp/converter/ConverterFrame.java	2026-08-12 00:22:26.161947100 -0600
++++ src/exp/converter/ConverterFrame.java	2026-08-12 10:47:48.070542700 -0600
+@@ -46,7 +46,7 @@
+     public ConverterFrame() {
+         this.setResizable(false);
+         this.setDefaultCloseOperation(2);
+-        this.setTitle("EXP soundboard : Audio Converter");
++        this.setTitle("KZ Soundboard : Audio Converter");
+         this.setIconImage(SoundboardFrame.icon);
+         JLabel lblInputFile = new JLabel("Input Files:");
+         this.inputFileLabel = new JLabel("none selected");
 @@ -160,7 +160,7 @@
          JLabel lblEncodingMessages = new JLabel("Encoding Messages:");
          this.encodingProgressLabel = new JLabel("0%");
@@ -10,9 +19,9 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/converter/ConverterFrame.java
          this.getContentPane().add((Component)separator_1, "cell 0 7 9 1,growx,aligny top");
          this.getContentPane().add((Component)separator, "cell 0 2 9 1,growx,aligny top");
          this.getContentPane().add((Component)lblInputFile, "cell 0 0 3 1,alignx left,aligny top");
-diff -ru '--exclude=cache' work/src-decompiled/exp/gui/AudioLevelsFrame.java repo/src/exp/gui/AudioLevelsFrame.java
---- work/src-decompiled/exp/gui/AudioLevelsFrame.java	2026-08-12 00:22:26.483825300 -0600
-+++ repo/src/exp/gui/AudioLevelsFrame.java	2026-08-12 01:10:14.389816000 -0600
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/AudioLevelsFrame.java src/exp/gui/AudioLevelsFrame.java
+--- ../work/src-decompiled/exp/gui/AudioLevelsFrame.java	2026-08-12 00:22:26.483825300 -0600
++++ src/exp/gui/AudioLevelsFrame.java	2026-08-12 01:10:14.389816000 -0600
 @@ -10,6 +10,7 @@
  import javax.swing.GroupLayout;
  import javax.swing.JFrame;
@@ -37,9 +46,9 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/AudioLevelsFrame.java rep
          JLabel lblMicInjectorGain = new JLabel("Mic Injector Gain:");
          this.micinjectorSlider = new JSlider();
          this.micinjectorSlider.addChangeListener(new ChangeListener(){
-diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SettingsFrame.java repo/src/exp/gui/SettingsFrame.java
---- work/src-decompiled/exp/gui/SettingsFrame.java	2026-08-12 00:22:26.442018900 -0600
-+++ repo/src/exp/gui/SettingsFrame.java	2026-08-12 10:27:28.549977200 -0600
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SettingsFrame.java src/exp/gui/SettingsFrame.java
+--- ../work/src-decompiled/exp/gui/SettingsFrame.java	2026-08-12 00:22:26.442018900 -0600
++++ src/exp/gui/SettingsFrame.java	2026-08-12 10:47:48.070542700 -0600
 @@ -42,6 +42,7 @@
  import javax.swing.JFormattedTextField;
  import javax.swing.JFrame;
@@ -74,7 +83,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SettingsFrame.java repo/s
                  GlobalScreen.getInstance().addNativeKeyListener((NativeKeyListener)SettingsFrame.this.stopKeyInputGetter);
              }
          });
-@@ -147,7 +148,8 @@
+@@ -147,14 +148,15 @@
                  }
              }
          });
@@ -84,6 +93,14 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SettingsFrame.java repo/s
          JButton btnProjectWebsite = new JButton("Project Website");
          btnProjectWebsite.addActionListener(new ActionListener(){
  
+             @Override
+             public void actionPerformed(ActionEvent e) {
+                 try {
+-                    Desktop.getDesktop().browse(new URI("https://sourceforge.net/projects/expsoundboard/"));
++                    Desktop.getDesktop().browse(new URI("https://github.com/devkazuo27/exp-soundboard-rework"));
+                 }
+                 catch (IOException e1) {
+                     e1.printStackTrace();
 @@ -165,18 +167,16 @@
              }
          });
@@ -102,7 +119,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SettingsFrame.java repo/s
 -        lblUseMicInjector.setFont(new Font("Tahoma", 2, 10));
 -        JLabel lblVersion = new JLabel("Version: 0.5");
 +        lblUseMicInjector.setFont(UIManager.getFont("Label.font").deriveFont(Font.ITALIC));
-+        JLabel lblVersion = new JLabel("Version: 0.5.1 \u2014 rework 2026");
++        JLabel lblVersion = new JLabel("KZ Soundboard 1.0");
          JLabel lblhalfSpeedPlayback = new JLabel("'Modified playback speed' combo key:");
          this.slowKeyTextField = new JTextField();
          this.slowKeyTextField.addFocusListener(new FocusAdapter(){
@@ -238,9 +255,10 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SettingsFrame.java repo/s
          this.pttKeysInputGetter.clearPressedKeys();
          GlobalScreen gs = GlobalScreen.getInstance();
          gs.removeNativeKeyListener((NativeKeyListener)this.stopKeyInputGetter);
-diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardEntryEditor.java repo/src/exp/gui/SoundboardEntryEditor.java
---- work/src-decompiled/exp/gui/SoundboardEntryEditor.java	2026-08-12 00:22:26.535869600 -0600
-+++ repo/src/exp/gui/SoundboardEntryEditor.java	2026-08-12 01:10:14.389816000 -0600
+Only in src/exp/gui: SoundPadRenderer.java
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SoundboardEntryEditor.java src/exp/gui/SoundboardEntryEditor.java
+--- ../work/src-decompiled/exp/gui/SoundboardEntryEditor.java	2026-08-12 00:22:26.535869600 -0600
++++ src/exp/gui/SoundboardEntryEditor.java	2026-08-12 01:10:14.389816000 -0600
 @@ -13,6 +13,7 @@
  import exp.soundboard.SoundboardEntry;
  import exp.soundboard.Utils;
@@ -280,10 +298,10 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardEntryEditor.jav
                  GlobalScreen.getInstance().removeNativeKeyListener((NativeKeyListener)SoundboardEntryEditor.this.inputGetter);
              }
          });
-diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo/src/exp/gui/SoundboardFrame.java
---- work/src-decompiled/exp/gui/SoundboardFrame.java	2026-08-12 00:22:26.725047100 -0600
-+++ repo/src/exp/gui/SoundboardFrame.java	2026-08-12 10:27:28.549977200 -0600
-@@ -24,10 +24,13 @@
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/SoundboardFrame.java src/exp/gui/SoundboardFrame.java
+--- ../work/src-decompiled/exp/gui/SoundboardFrame.java	2026-08-12 00:22:26.725047100 -0600
++++ src/exp/gui/SoundboardFrame.java	2026-08-12 10:54:56.930334600 -0600
+@@ -24,14 +24,19 @@
  import exp.soundboard.Utils;
  import java.awt.Color;
  import java.awt.Component;
@@ -297,11 +315,22 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
  import java.awt.event.ActionEvent;
  import java.awt.event.ActionListener;
  import java.awt.event.ItemEvent;
-@@ -52,15 +55,22 @@
+ import java.awt.event.ItemListener;
++import java.awt.event.MouseAdapter;
++import java.awt.event.MouseEvent;
+ import java.awt.event.WindowAdapter;
+ import java.awt.event.WindowEvent;
+ import java.io.File;
+@@ -52,15 +57,27 @@
  import javax.swing.JMenu;
  import javax.swing.JMenuBar;
  import javax.swing.JMenuItem;
++import javax.swing.JList;
 +import javax.swing.JPanel;
++import javax.swing.JPopupMenu;
++import javax.swing.ListSelectionModel;
++import javax.swing.DefaultListModel;
++import javax.swing.BorderFactory;
 +import javax.swing.JRadioButtonMenuItem;
 +import javax.swing.ButtonGroup;
  import javax.swing.JOptionPane;
@@ -320,16 +349,37 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
  import javax.swing.table.TableColumnModel;
  import net.miginfocom.swing.MigLayout;
  import org.jnativehook.GlobalScreen;
-@@ -71,7 +81,7 @@
+@@ -71,13 +88,13 @@
      private static final long serialVersionUID = 8934802095461138592L;
      final SoundboardFrame thisFrameInstance;
      public static final float VERSION = 0.5f;
 -    private final String title = "EXP Soundboard vers. 0.5 | ";
-+    private static final String TITLE = "EXP Soundboard 0.5.1";
++    private static final String TITLE = "KZ Soundboard 1.0";
      private JComboBox<String> secondarySpeakerComboBox;
      private JComboBox<String> primarySpeakerComboBox;
      public AudioManager audioManager;
-@@ -119,9 +129,18 @@
+     public static Soundboard soundboard;
+     public File testFile;
+-    private JTable table;
++    private JList<SoundboardEntry> padGrid;
+     public static GlobalKeyMacroListener macroListener;
+     static boolean updateCheck;
+     public static String micInjectorInputMixerName;
+@@ -85,6 +102,8 @@
+     public static boolean useMicInjector;
+     public static final Image icon;
+     public static JFileChooser filechooser;
++    private static final String PROJECT_URL = "https://github.com/devkazuo27/exp-soundboard-rework";
++    private static final String ORIGINAL_URL = "https://sourceforge.net/projects/expsoundboard/";
+     private final String useSecondaryKey = "useSecondSpeaker";
+     private final String firstSpeakerKey = "firstSpeaker";
+     private final String secondSpeakerKey = "secondSpeaker";
+@@ -115,13 +134,22 @@
+         micInjectorInputMixerName = "";
+         micInjectorOutputMixerName = "";
+         useMicInjector = false;
+-        icon = new ImageIcon(SoundboardFrame.class.getResource("EXP logo.png")).getImage();
++        icon = Ui.logoImage();
      }
  
      public static void main(String[] args) {
@@ -349,7 +399,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
      }
  
      public SoundboardFrame() {
-@@ -132,36 +151,14 @@
+@@ -132,36 +160,14 @@
                  SoundboardFrame.this.exit();
              }
          });
@@ -390,7 +440,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
          this.setIconImage(icon);
          this.macInit();
          this.secondarySpeakerComboBox = new JComboBox();
-@@ -194,7 +191,7 @@
+@@ -194,7 +200,7 @@
                  Utils.stopAllClips();
              }
          });
@@ -399,7 +449,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
          this.useSecondaryCheckBox.addActionListener(new ActionListener(){
  
              @Override
-@@ -211,7 +208,8 @@
+@@ -211,7 +217,8 @@
                  new SoundboardEntryEditor(SoundboardFrame.this.thisFrameInstance);
              }
          });
@@ -409,7 +459,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
          this.useMicInjectorCheckBox.addActionListener(new ActionListener(){
  
              @Override
-@@ -220,12 +218,12 @@
+@@ -220,12 +227,12 @@
                  SoundboardFrame.this.updateMicInjector();
              }
          });
@@ -427,32 +477,113 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
          this.autoPptCheckBox.addActionListener(new ActionListener(){
  
              @Override
-@@ -256,7 +254,6 @@
+@@ -234,93 +241,108 @@
+                 Utils.setAutoPTThold(selected);
              }
          });
-         scrollPane.setViewportView(this.table);
+-        this.table = new JTable();
+-        this.table.setSelectionMode(0);
+-        this.table.setAutoCreateRowSorter(true);
+-        this.table.setModel(new DefaultTableModel(new Object[][]{new Object[2]}, new String[]{"Sound Clip", "HotKeys"}){
+-            private static final long serialVersionUID = 1L;
+-            Class[] columnTypes;
+-            boolean[] columnEditables;
+-            {
+-                this.columnTypes = new Class[]{String.class, String.class};
+-                this.columnEditables = new boolean[2];
+-            }
+-
+-            public Class getColumnClass(int columnIndex) {
+-                return this.columnTypes[columnIndex];
+-            }
+-
+-            @Override
+-            public boolean isCellEditable(int row, int column) {
+-                return this.columnEditables[column];
++        // DESIGN: clips are a grid of pads rather than a table row. A JList in horizontal
++        // wrap mode gives the reflowing grid, the selection and the keyboard navigation for
++        // free; SoundPadRenderer paints each pad.
++        this.padGrid = new JList<SoundboardEntry>(new DefaultListModel<SoundboardEntry>());
++        this.padGrid.setLayoutOrientation(JList.HORIZONTAL_WRAP);
++        this.padGrid.setVisibleRowCount(-1);
++        this.padGrid.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
++        this.padGrid.setFixedCellWidth(SoundPadRenderer.PAD_WIDTH);
++        this.padGrid.setFixedCellHeight(SoundPadRenderer.PAD_HEIGHT);
++        this.padGrid.setCellRenderer(new SoundPadRenderer());
++        this.padGrid.setBorder(BorderFactory.createEmptyBorder(6, 6, 6, 6));
++        this.padGrid.addMouseListener(new MouseAdapter(){
++
++            @Override
++            public void mousePressed(MouseEvent e) {
++                int index = SoundboardFrame.this.padGrid.locationToIndex(e.getPoint());
++                if (index < 0 || !SoundboardFrame.this.padGrid.getCellBounds(index, index).contains(e.getPoint())) {
++                    SoundboardFrame.this.padGrid.clearSelection();
++                    return;
++                }
++                SoundboardFrame.this.padGrid.setSelectedIndex(index);
++                if (SwingUtilities.isRightMouseButton(e)) {
++                    SoundboardFrame.this.padMenu().show(SoundboardFrame.this.padGrid, e.getX(), e.getY());
++                } else if (SwingUtilities.isLeftMouseButton(e)) {
++                    SoundboardFrame.this.playSelected();
++                }
+             }
+         });
+-        scrollPane.setViewportView(this.table);
 -        this.getContentPane().setLayout((LayoutManager)new MigLayout("gapx  2:4:5, gapy 2:4:5, fillx", "[][][][6px][20px][6px][2px][10px][53px][6px][][24px][2px][43px]", "[grow,fill][23px][14px][20px][14px][23px][2px][23px]"));
++        scrollPane.setViewportView(this.padGrid);
          JButton btnRemove = new JButton("Remove");
          btnRemove.addActionListener(new ActionListener(){
  
-@@ -276,7 +273,6 @@
-                 }
+             @Override
+             public void actionPerformed(ActionEvent arg0) {
+-                int selected = SoundboardFrame.this.table.getSelectedRow();
+-                if (selected > -1) {
+-                    int index = SoundboardFrame.this.getSelectedEntryIndex();
+-                    soundboard.removeEntry(index);
+-                    SoundboardFrame.this.updateSoundboardTable();
+-                    if (index >= SoundboardFrame.this.table.getRowCount()) {
+-                        --index;
+-                    }
+-                    if (index >= 0) {
+-                        SoundboardFrame.this.table.setRowSelectionInterval(index, index);
+-                    }
+-                }
++                SoundboardFrame.this.removeSelected();
              }
          });
 -        this.getContentPane().add((Component)btnRemove, "cell 1 1,alignx left,aligny top");
          JButton btnEdit = new JButton("Edit");
          btnEdit.addActionListener(new ActionListener(){
  
-@@ -291,7 +287,6 @@
-                 }
+             @Override
+             public void actionPerformed(ActionEvent arg0) {
+-                int selected = SoundboardFrame.this.table.getSelectedRow();
+-                if (selected > -1) {
+-                    int index = SoundboardFrame.this.getSelectedEntryIndex();
+-                    System.out.println("index " + index);
+-                    SoundboardEntry entry = soundboard.getEntry(index);
+-                    new SoundboardEntryEditor(SoundboardFrame.this.thisFrameInstance, entry);
+-                }
++                SoundboardFrame.this.editSelected();
              }
          });
 -        this.getContentPane().add((Component)btnEdit, "cell 2 1,alignx left,aligny top");
          JButton btnPlay = new JButton("Play");
          btnPlay.addActionListener(new ActionListener(){
  
-@@ -309,18 +304,59 @@
-                 }
+             @Override
+             public void actionPerformed(ActionEvent e) {
+-                int selected = SoundboardFrame.this.table.getSelectedRow();
+-                if (selected > -1) {
+-                    int index = SoundboardFrame.this.getSelectedEntryIndex();
+-                    SoundboardEntry entry = soundboard.getEntry(index);
+-                    if (macroListener.isSpeedModKeyHeld()) {
+-                        entry.play(SoundboardFrame.this.audioManager, true);
+-                    } else {
+-                        entry.play(SoundboardFrame.this.audioManager, false);
+-                    }
+-                }
++                SoundboardFrame.this.playSelected();
              }
          });
 -        this.getContentPane().add((Component)btnPlay, "cell 10 1,alignx right,aligny top");
@@ -470,19 +601,14 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
 +        // ------------------------------------------------------------ DESIGN
 +        // A single column with separate sections, real margins, and sizes derived from the
 +        // font instead of fixed pixel columns (which do not scale with the display DPI).
-+        this.table.setRowHeight(26);
-+        this.table.setShowGrid(false);
-+        this.table.setIntercellSpacing(new Dimension(0, 0));
-+        this.table.setFillsViewportHeight(true);
-+        this.table.getTableHeader().setReorderingAllowed(false);
-+        // DESIGN: the header was centred while the data below it was left-aligned.
-+        TableCellRenderer headerRenderer = this.table.getTableHeader().getDefaultRenderer();
-+        if (headerRenderer instanceof DefaultTableCellRenderer) {
-+            ((DefaultTableCellRenderer)headerRenderer).setHorizontalAlignment(SwingConstants.LEADING);
-+        }
++        this.padGrid.setToolTipText("Click a pad to play it, right-click for more");
 +        Ui.styleTableContainer(scrollPane);
 +
 +        btnAdd.setToolTipText("Add a sound clip and assign hotkeys to it");
++        // DESIGN: Add is the primary action, so it carries the KZ accent.
++        btnAdd.putClientProperty("JButton.buttonType", "default");
++        btnAdd.setBackground(Ui.ACCENT);
++        btnAdd.setForeground(java.awt.Color.WHITE);
 +        btnRemove.setToolTipText("Remove the selected clip");
 +        btnEdit.setToolTipText("Change the file or hotkeys of the selected clip");
 +        btnPlay.setToolTipText("Play the selected clip");
@@ -510,7 +636,8 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
 +        options.add(this.autoPptCheckBox, "align right");
 +
 +        Container content = this.getContentPane();
-+        content.setLayout((LayoutManager)new MigLayout("insets 14, gap 10, fillx, wrap 1", "[grow,fill]", "[grow,fill][][][][][]"));
++        content.setLayout((LayoutManager)new MigLayout("insets 14, gap 10, fillx, wrap 1", "[grow,fill]", "[][grow,fill][][][][][]"));
++        content.add(Ui.brandHeader(), "growx");
 +        content.add(scrollPane, "grow");
 +        content.add(toolbar, "growx");
 +        content.add(Ui.section("Output devices"), "growx, gaptop 6");
@@ -523,7 +650,40 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
          this.menuBar = new JMenuBar();
          this.setJMenuBar(this.menuBar);
          JMenu mnFile = new JMenu("File");
-@@ -402,6 +438,29 @@
+@@ -366,20 +388,25 @@
+         mnFile.add(mntmSaveAs);
+         JSeparator separator_3 = new JSeparator();
+         mnFile.add(separator_3);
+-        JMenuItem mntmProjectPage = new JMenuItem("Sourceforge Page");
++        JMenuItem mntmProjectPage = new JMenuItem("GitHub Page");
+         mntmProjectPage.addActionListener(new ActionListener(){
+ 
+             @Override
+             public void actionPerformed(ActionEvent arg0) {
+-                try {
+-                    Desktop.getDesktop().browse(new URI("https://sourceforge.net/projects/expsoundboard/"));
+-                }
+-                catch (IOException | URISyntaxException e) {
+-                    e.printStackTrace();
+-                }
++                SoundboardFrame.this.browse(PROJECT_URL);
+             }
+         });
+         mnFile.add(mntmProjectPage);
++        // The licence of the original work requires keeping the credit reachable.
++        JMenuItem mntmOriginal = new JMenuItem("Original project by Expenosa");
++        mntmOriginal.addActionListener(new ActionListener(){
++
++            @Override
++            public void actionPerformed(ActionEvent arg0) {
++                SoundboardFrame.this.browse(ORIGINAL_URL);
++            }
++        });
++        mnFile.add(mntmOriginal);
+         JSeparator separator_1 = new JSeparator();
+         mnFile.add(separator_1);
+         JMenuItem mntmQuit = new JMenuItem("Quit");
+@@ -402,6 +429,29 @@
              }
          });
          mnEdit.add(mntmSettings);
@@ -553,7 +713,30 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
          JMenuItem mntmAudioLevels = new JMenuItem("Audio Levels");
          mntmAudioLevels.addActionListener(new ActionListener(){
  
-@@ -426,7 +485,7 @@
+@@ -413,6 +463,22 @@
+         mnEdit.add(mntmAudioLevels);
+         JSeparator separator_2 = new JSeparator();
+         mnEdit.add(separator_2);
++        JMenuItem mntmVirtualCable = new JMenuItem("Virtual Audio Cable\u2026");
++        mntmVirtualCable.addActionListener(new ActionListener(){
++
++            @Override
++            public void actionPerformed(ActionEvent e) {
++                if (VbCable.promptIfMissing(SoundboardFrame.this.thisFrameInstance, true)) {
++                    JOptionPane.showMessageDialog(SoundboardFrame.this.thisFrameInstance,
++                            "VB-Audio Virtual Cable is installed.\n\n"
++                            + "Point the second output at \"CABLE Input\" and have your voice "
++                            + "software listen on \"CABLE Output\".",
++                            "Virtual audio cable", JOptionPane.INFORMATION_MESSAGE);
++                }
++            }
++        });
++        mnEdit.add(mntmVirtualCable);
++
+         JMenuItem mntmAudioConverter = new JMenuItem("Audio Converter");
+         mntmAudioConverter.addActionListener(new ActionListener(){
+ 
+@@ -426,7 +492,7 @@
              }
          });
          mnEdit.add(mntmAudioConverter);
@@ -562,17 +745,119 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
          this.updateSpeakerComboBoxes();
          this.pack();
          this.thisFrameInstance = this;
-@@ -457,6 +516,9 @@
+@@ -434,33 +500,94 @@
+         GlobalScreen.getInstance().addNativeKeyListener((NativeKeyListener)macroListener);
+         this.setLocationRelativeTo(null);
+         this.loadPrefs();
++        // Offer the virtual cable once, after the window is up: without it the second output
++        // and the Mic Injector have nowhere useful to point.
++        SwingUtilities.invokeLater(new Runnable(){
++
++            @Override
++            public void run() {
++                VbCable.promptIfMissing(SoundboardFrame.this.thisFrameInstance, false);
++            }
++        });
+     }
+ 
++    /** Rebuilds the pad grid from the soundboard, keeping the selection where possible. */
+     public void updateSoundboardTable() {
+-        Object[][] entryArray = soundboard.getEntriesAsObjectArrayForTable();
+-        this.table.setModel(new DefaultTableModel(entryArray, new String[]{"Sound Clip", "HotKeys", "File Locations", "Index"}){
+-            private static final long serialVersionUID = 1L;
+-            Class[] columnTypes;
+-            boolean[] columnEditables;
+-            {
+-                this.columnTypes = new Class[]{String.class, String.class, String.class, Integer.TYPE};
+-                this.columnEditables = new boolean[4];
++        int previous = this.padGrid.getSelectedIndex();
++        DefaultListModel<SoundboardEntry> model = new DefaultListModel<SoundboardEntry>();
++        for (SoundboardEntry entry : soundboard.getSoundboardEntries()) {
++            model.addElement(entry);
++        }
++        this.padGrid.setModel(model);
++        if (previous >= 0 && previous < model.size()) {
++            this.padGrid.setSelectedIndex(previous);
++        }
++    }
++
++    /** Context menu of a pad. The toolbar buttons do exactly the same on the selection. */
++    private JPopupMenu padMenu() {
++        JPopupMenu menu = new JPopupMenu();
++        JMenuItem play = new JMenuItem("Play");
++        play.addActionListener(new ActionListener(){
++
++            @Override
++            public void actionPerformed(ActionEvent e) {
++                SoundboardFrame.this.playSelected();
+             }
++        });
++        JMenuItem edit = new JMenuItem("Edit\u2026");
++        edit.addActionListener(new ActionListener(){
+ 
+-            public Class getColumnClass(int columnIndex) {
+-                return this.columnTypes[columnIndex];
++            @Override
++            public void actionPerformed(ActionEvent e) {
++                SoundboardFrame.this.editSelected();
+             }
++        });
++        JMenuItem remove = new JMenuItem("Remove");
++        remove.addActionListener(new ActionListener(){
+ 
+             @Override
+-            public boolean isCellEditable(int row, int column) {
+-                return this.columnEditables[column];
++            public void actionPerformed(ActionEvent e) {
++                SoundboardFrame.this.removeSelected();
              }
          });
-         TableColumnModel columnmod = this.table.getColumnModel();
-+        // DESIGN: the clip name is what gets read most, so give it more room than the keys.
-+        columnmod.getColumn(0).setPreferredWidth(300);
-+        columnmod.getColumn(1).setPreferredWidth(180);
-         columnmod.getColumn(3).setMinWidth(0);
-         columnmod.getColumn(3).setMaxWidth(0);
-         columnmod.getColumn(3).setWidth(0);
-@@ -469,7 +531,7 @@
+-        TableColumnModel columnmod = this.table.getColumnModel();
+-        columnmod.getColumn(3).setMinWidth(0);
+-        columnmod.getColumn(3).setMaxWidth(0);
+-        columnmod.getColumn(3).setWidth(0);
+-        this.table.removeColumn(columnmod.getColumn(2));
++        menu.add(play);
++        menu.add(edit);
++        menu.addSeparator();
++        menu.add(remove);
++        return menu;
++    }
++
++    private void playSelected() {
++        SoundboardEntry entry = this.selectedEntry();
++        if (entry != null) {
++            entry.play(this.audioManager, macroListener.isSpeedModKeyHeld());
++        }
++    }
++
++    private void editSelected() {
++        SoundboardEntry entry = this.selectedEntry();
++        if (entry != null) {
++            new SoundboardEntryEditor(this.thisFrameInstance, entry);
++        }
++    }
++
++    private void removeSelected() {
++        int index = this.padGrid.getSelectedIndex();
++        if (index < 0) {
++            return;
++        }
++        soundboard.removeEntry(index);
++        this.updateSoundboardTable();
++        int count = this.padGrid.getModel().getSize();
++        if (count > 0) {
++            this.padGrid.setSelectedIndex(Math.min(index, count - 1));
++        }
++    }
++
++    private SoundboardEntry selectedEntry() {
++        int index = this.padGrid.getSelectedIndex();
++        return index < 0 ? null : soundboard.getEntry(index);
+     }
+ 
+     private void fileNew() {
+@@ -469,7 +596,7 @@
          this.currentSoundboardFile = null;
          soundboard = new Soundboard();
          this.updateSoundboardTable();
@@ -581,7 +866,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
      }
  
      private void fileOpen() {
-@@ -501,7 +563,7 @@
+@@ -501,7 +628,7 @@
          if ((session = fc.showSaveDialog(null)) == 0) {
              File file = fc.getSelectedFile();
              this.currentSoundboardFile = soundboard.saveAsJsonFile(file);
@@ -590,7 +875,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
          }
      }
  
-@@ -515,7 +577,7 @@
+@@ -515,7 +642,7 @@
              soundboard = sb;
              this.updateSoundboardTable();
              this.currentSoundboardFile = jsonfile;
@@ -599,7 +884,33 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
          }
      }
  
-@@ -570,6 +632,11 @@
+@@ -533,8 +660,7 @@
+     }
+ 
+     private int getSelectedEntryIndex() {
+-        int selected = this.table.getSelectedRow();
+-        return (Integer)this.table.getValueAt(selected, 2);
++        return this.padGrid.getSelectedIndex();
+     }
+ 
+     public void updateMicInjector() {
+@@ -546,6 +672,15 @@
+         }
+     }
+ 
++    private void browse(String url) {
++        try {
++            Desktop.getDesktop().browse(new URI(url));
++        }
++        catch (IOException | URISyntaxException e) {
++            e.printStackTrace();
++        }
++    }
++
+     private void savePrefs() {
+         Preferences prefs = Utils.prefs;
+         prefs.putBoolean("useSecondSpeaker", this.useSecondaryCheckBox.isSelected());
+@@ -570,6 +705,11 @@
          prefs.putFloat("primaryOutputGain", AudioManager.getFirstOutputGain());
          prefs.putFloat("secondaryOutputGain", AudioManager.getSecondOutputGain());
          prefs.putFloat("micInjectorOutputGain", Utils.getMicInjectorGain());
@@ -611,7 +922,18 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
      }
  
      private void loadPrefs() {
-@@ -626,6 +693,12 @@
+@@ -580,6 +720,10 @@
+         this.audioManager.setUseSecondary(useSecond);
+         String firstspeaker = prefs.get("firstSpeaker", null);
+         String secondspeaker = prefs.get("secondSpeaker", null);
++        if (secondspeaker == null) {
++            // First run with the cable already installed: point the second output at it.
++            secondspeaker = VbCable.findPlaybackDevice(Utils.getMixerNames(this.audioManager.standardDataLineInfo));
++        }
+         if (firstspeaker != null) {
+             this.primarySpeakerComboBox.setSelectedItem(firstspeaker);
+             this.audioManager.setPrimaryOutputMixer(firstspeaker);
+@@ -626,6 +770,12 @@
          Utils.setOverlapSameClipWhilePlaying(prefs.getBoolean("OverlapClipsWhilePlaying", true));
          int overlapKey = prefs.getInt("OverlapClipsKey", 36);
          Utils.setOverlapSwitchKey(overlapKey);
@@ -624,14 +946,15 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
      }
  
      private void exit() {
-@@ -655,10 +728,22 @@
+@@ -655,10 +805,22 @@
  
      private void macInit() {
          if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 -            Application application = Application.getApplication();
 -            application.setDockIconImage(icon);
              System.setProperty("apple.laf.useScreenMenuBar", "true");
-             System.setProperty("com.apple.mrj.application.apple.menu.about.name", "EXP Soundboard");
+-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "EXP Soundboard");
++            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "KZ Soundboard");
 +            // FIX: com.apple.eawt was removed from the JDK in Java 9, so on a macOS running a
 +            // modern Java the application would not even open. The dock icon is optional.
 +            try {
@@ -649,10 +972,23 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/gui/SoundboardFrame.java repo
          }
      }
  
-Only in repo/src/exp/gui: Ui.java
-diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/AudioManager.java repo/src/exp/soundboard/AudioManager.java
---- work/src-decompiled/exp/soundboard/AudioManager.java	2026-08-12 00:22:26.872105300 -0600
-+++ repo/src/exp/soundboard/AudioManager.java	2026-08-12 10:27:28.549977200 -0600
+Only in src/exp/gui: Ui.java
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/gui/UpdateConfirmFrame.java src/exp/gui/UpdateConfirmFrame.java
+--- ../work/src-decompiled/exp/gui/UpdateConfirmFrame.java	2026-08-12 00:22:26.560595500 -0600
++++ src/exp/gui/UpdateConfirmFrame.java	2026-08-12 10:47:48.070542700 -0600
+@@ -29,7 +29,7 @@
+         this.setResizable(false);
+         this.setDefaultCloseOperation(2);
+         this.setTitle("Update Available!");
+-        JLabel lblSoundboardUpdateAvailable = new JLabel("EXP Soundboard Update Available");
++        JLabel lblSoundboardUpdateAvailable = new JLabel("KZ Soundboard Update Available");
+         JScrollPane scrollPane = new JScrollPane();
+         JButton btnClose = new JButton("Close");
+         btnClose.addActionListener(new ActionListener(){
+Only in src/exp/gui: VbCable.java
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/soundboard/AudioManager.java src/exp/soundboard/AudioManager.java
+--- ../work/src-decompiled/exp/soundboard/AudioManager.java	2026-08-12 00:22:26.872105300 -0600
++++ src/exp/soundboard/AudioManager.java	2026-08-12 10:27:28.549977200 -0600
 @@ -13,6 +13,7 @@
  import javax.sound.sampled.Mixer;
  import javax.sound.sampled.SourceDataLine;
@@ -761,9 +1097,9 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/AudioManager.java 
      public synchronized void setPrimaryOutputMixer(String mixerName) {
          String[] mixers;
          String[] stringArray = mixers = Utils.getMixerNames(this.standardDataLineInfo);
-diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/GlobalKeyMacroListener.java repo/src/exp/soundboard/GlobalKeyMacroListener.java
---- work/src-decompiled/exp/soundboard/GlobalKeyMacroListener.java	2026-08-12 00:22:26.811692200 -0600
-+++ repo/src/exp/soundboard/GlobalKeyMacroListener.java	2026-08-12 01:10:14.383641700 -0600
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/soundboard/GlobalKeyMacroListener.java src/exp/soundboard/GlobalKeyMacroListener.java
+--- ../work/src-decompiled/exp/soundboard/GlobalKeyMacroListener.java	2026-08-12 00:22:26.811692200 -0600
++++ src/exp/soundboard/GlobalKeyMacroListener.java	2026-08-12 01:10:14.383641700 -0600
 @@ -95,7 +95,7 @@
          } else {
              int matches;
@@ -782,9 +1118,9 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/GlobalKeyMacroList
              for (SoundboardEntry p : potentialCopy) {
                  matches = p.matchesHowManyPressed(this.pressedKeys);
                  if (matches >= highest) continue;
-diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/MicInjector.java repo/src/exp/soundboard/MicInjector.java
---- work/src-decompiled/exp/soundboard/MicInjector.java	2026-08-12 00:22:26.789922400 -0600
-+++ repo/src/exp/soundboard/MicInjector.java	2026-08-12 10:27:28.549977200 -0600
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/soundboard/MicInjector.java src/exp/soundboard/MicInjector.java
+--- ../work/src-decompiled/exp/soundboard/MicInjector.java	2026-08-12 00:22:26.789922400 -0600
++++ src/exp/soundboard/MicInjector.java	2026-08-12 10:27:28.549977200 -0600
 @@ -38,7 +38,7 @@
      private boolean fadeOut;
      int userVolume;
@@ -909,9 +1245,9 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/MicInjector.java r
              try {
                  this.targetDataLine.open(signedFormat, 8192);
                  this.targetDataLine.start();
-diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/UpdateChecker.java repo/src/exp/soundboard/UpdateChecker.java
---- work/src-decompiled/exp/soundboard/UpdateChecker.java	2026-08-12 00:22:26.985146100 -0600
-+++ repo/src/exp/soundboard/UpdateChecker.java	2026-08-12 10:27:28.555105400 -0600
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/soundboard/UpdateChecker.java src/exp/soundboard/UpdateChecker.java
+--- ../work/src-decompiled/exp/soundboard/UpdateChecker.java	2026-08-12 00:22:26.985146100 -0600
++++ src/exp/soundboard/UpdateChecker.java	2026-08-12 10:27:28.555105400 -0600
 @@ -9,6 +9,7 @@
  import java.io.InputStreamReader;
  import java.net.MalformedURLException;
@@ -948,10 +1284,10 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/UpdateChecker.java
              internetconnection = true;
          }
          catch (MalformedURLException ex) {
-diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/Utils.java repo/src/exp/soundboard/Utils.java
---- work/src-decompiled/exp/soundboard/Utils.java	2026-08-12 00:22:26.938120700 -0600
-+++ repo/src/exp/soundboard/Utils.java	2026-08-12 10:27:28.555105400 -0600
-@@ -15,12 +15,14 @@
+diff -ru '--exclude=cache' ../work/src-decompiled/exp/soundboard/Utils.java src/exp/soundboard/Utils.java
+--- ../work/src-decompiled/exp/soundboard/Utils.java	2026-08-12 00:22:26.938120700 -0600
++++ src/exp/soundboard/Utils.java	2026-08-12 10:47:48.070542700 -0600
+@@ -15,12 +15,15 @@
  import java.awt.AWTException;
  import java.awt.Robot;
  import java.awt.event.KeyEvent;
@@ -963,14 +1299,43 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/Utils.java repo/sr
  import java.util.Collection;
  import java.util.concurrent.ConcurrentHashMap;
 +import java.util.concurrent.atomic.AtomicInteger;
++import java.util.prefs.BackingStoreException;
  import java.util.prefs.Preferences;
  import javax.sound.sampled.AudioFormat;
  import javax.sound.sampled.AudioInputStream;
-@@ -40,7 +42,13 @@
+@@ -38,9 +41,39 @@
+ 
+ public class Utils {
      private static ThreadGroup clipPlayerThreadGroup = new ThreadGroup("Clip Player Group");
-     private static final String prefsName = "Expenosa's Soundboard";
-     public static final Preferences prefs = Preferences.userRoot().node("Expenosa's Soundboard");
+-    private static final String prefsName = "Expenosa's Soundboard";
+-    public static final Preferences prefs = Preferences.userRoot().node("Expenosa's Soundboard");
 -    private static boolean PLAYALL = true;
++    private static final String prefsName = "KZ Soundboard";
++    private static final String legacyPrefsName = "Expenosa's Soundboard";
++    public static final Preferences prefs = openPreferences();
++
++    /**
++     * The settings node was renamed along with the application. Anything saved under the old
++     * EXP Soundboard name is copied across the first time, so nobody loses their hotkeys,
++     * devices or last soundboard on upgrading.
++     */
++    private static Preferences openPreferences() {
++        Preferences node = Preferences.userRoot().node(prefsName);
++        try {
++            if (node.keys().length == 0 && Preferences.userRoot().nodeExists(legacyPrefsName)) {
++                Preferences legacy = Preferences.userRoot().node(legacyPrefsName);
++                for (String key : legacy.keys()) {
++                    node.put(key, legacy.get(key, ""));
++                }
++                node.flush();
++                System.out.println("Settings migrated from the previous EXP Soundboard install");
++            }
++        }
++        catch (BackingStoreException e) {
++            e.printStackTrace();
++        }
++        return node;
++    }
 +    /**
 +     * FIX: this used to be a non-volatile static boolean (PLAYALL). "Stop All" set it to
 +     * false, but any clip starting right afterwards set it back to true and resurrected the
@@ -981,7 +1346,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/Utils.java repo/sr
      public static final int BUFFERSIZE = 2048;
      public static final float STANDARDSAMPLERATE = 44100.0f;
      private static float modifiedPlaybackSpeed;
-@@ -119,7 +127,7 @@
+@@ -119,7 +152,7 @@
      }
  
      public static void stopAllClips() {
@@ -990,7 +1355,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/Utils.java repo/sr
          Utils.zeroCurrentClipCount();
      }
  
-@@ -167,9 +175,24 @@
+@@ -167,9 +200,24 @@
              ++n2;
          }
          if (inputexists && outputexists) {
@@ -1018,7 +1383,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/Utils.java repo/sr
          }
      }
  
-@@ -190,7 +213,11 @@
+@@ -190,7 +238,11 @@
      }
  
      public static void startMp3Decoder() {
@@ -1031,7 +1396,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/Utils.java repo/sr
          try {
              AudioSystem.getAudioFileFormat(loaderfile);
              AudioInputStream stream = AudioSystem.getAudioInputStream(loaderfile);
-@@ -473,10 +500,10 @@
+@@ -473,10 +525,10 @@
          int n2 = 0;
          while (n2 < n) {
              Thread thread = threadArray[n2];
@@ -1046,7 +1411,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/Utils.java repo/sr
                  stopped = true;
              }
              ++n2;
-@@ -489,7 +516,7 @@
+@@ -489,7 +541,7 @@
          File file;
          SourceDataLine primarySpeaker = null;
          SourceDataLine secondarySpeaker = null;
@@ -1055,7 +1420,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/Utils.java repo/sr
  
          public ClipPlayer(File file, SourceDataLine primarySpeaker, SourceDataLine secondarySpeaker) {
              super(clipPlayerThreadGroup, file.toString());
-@@ -509,7 +536,7 @@
+@@ -509,7 +561,7 @@
          }
  
          private void playSoundClip(File file, SourceDataLine primarySpeaker, SourceDataLine secondarySpeaker) {
@@ -1064,7 +1429,7 @@ diff -ru '--exclude=cache' work/src-decompiled/exp/soundboard/Utils.java repo/sr
              AudioInputStream clip = null;
              AudioFormat clipformat = null;
              try {
-@@ -530,7 +557,7 @@
+@@ -530,7 +582,7 @@
                  Utils.incrementCurrentClipCount();
                  byte[] buffer = new byte[2048];
                  int bytesRead = 0;

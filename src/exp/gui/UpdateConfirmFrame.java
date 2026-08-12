@@ -29,7 +29,7 @@ extends JFrame {
         this.setResizable(false);
         this.setDefaultCloseOperation(2);
         this.setTitle("Update Available!");
-        JLabel lblSoundboardUpdateAvailable = new JLabel("EXP Soundboard Update Available");
+        JLabel lblSoundboardUpdateAvailable = new JLabel("KZ Soundboard Update Available");
         JScrollPane scrollPane = new JScrollPane();
         JButton btnClose = new JButton("Close");
         btnClose.addActionListener(new ActionListener(){

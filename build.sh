@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Compiles and packages EXP Soundboard into a runnable JAR.
+# Compiles and packages KZ Soundboard into a runnable JAR.
 #
 # Why a flat JAR: the original used Eclipse's jar-in-jar loader, which since Java 9 can no
 # longer load the nested libraries (NoClassDefFoundError). Here the dependencies are unpacked
@@ -8,7 +8,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 MAIN_CLASS="exp.gui.SoundboardFrame"
-OUT_JAR="dist/EXP Soundboard_051.jar"
+OUT_JAR="dist/KZ Soundboard.jar"
 RELEASE=17           # bytecode compatible with Java 17 and later
 
 rm -rf classes staging
@@ -51,8 +51,8 @@ find staging -name 'Thumbs.db' -delete
 
 cat > staging/manifest.txt <<EOF
 Main-Class: $MAIN_CLASS
-Implementation-Title: EXP Soundboard
-Implementation-Version: 0.5.1
+Implementation-Title: KZ Soundboard
+Implementation-Version: 1.0
 Enable-Native-Access: ALL-UNNAMED
 EOF
 

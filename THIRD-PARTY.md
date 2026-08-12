@@ -7,8 +7,9 @@ Released under [Creative Commons Attribution-ShareAlike 3.0 Unported](LICENSE).
 
 This repository is a derivative work: the sources were decompiled from the 0.5 JAR the author
 published and then modified. The changes are listed in the README and in full in
-`CHANGES.diff`. The logo (`resources/exp/gui/EXP logo.png`) and the `loader.mp3` clip are part
-of the original work and are redistributed under the same licence.
+`CHANGES.diff`. The `loader.mp3` clip is part of the original work and is redistributed under
+the same licence; Expenosa's original logo was removed when the fork was renamed, and the KZ
+name and logo belong to the author of this fork.
 
 Neither this repository nor its authors are associated with Expenosa, and this version is not
 official. If the original author would like something removed or changed, opening an issue is
@@ -59,6 +60,13 @@ The Windows `.zip` includes a Java runtime trimmed with `jlink`, generated from
 [Eclipse Temurin](https://adoptium.net/) (OpenJDK), under **GPL v2 with Classpath Exception**,
 which is precisely what allows shipping it alongside an application. Source code (built with
 Temurin 25.0.3): <https://github.com/adoptium/jdk25u> and <https://openjdk.org/>.
+
+## VB-Audio Virtual Cable
+
+[VB-CABLE](https://vb-audio.com/Cable/) is the virtual audio device this application guides you
+to install so other people can hear your clips. It is **not** bundled or redistributed here:
+it is donationware by VB-Audio whose licence does not permit redistribution. The application
+only detects whether it is present and opens VB-Audio's own download page.
 
 ## Tooling
 
