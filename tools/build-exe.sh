@@ -48,3 +48,15 @@ jpackage \
 
 echo ">> Done: build-exe/$NAME/$NAME.exe"
 du -sh "build-exe/$NAME"
+
+# The ZIP published in the releases. Git Bash on Windows ships without zip(1); jar(1) comes
+# with the same JDK that jpackage already needs, and writes an ordinary deflated archive.
+ZIP="KZ-Soundboard-$VERSION-windows-x64.zip"
+echo ">> Packing $ZIP..."
+rm -f "build-exe/$ZIP"
+if command -v zip >/dev/null 2>&1; then
+    (cd build-exe && zip -qr9 "$ZIP" "$NAME")
+else
+    (cd build-exe && jar --create --no-manifest --file "$ZIP" "$NAME")
+fi
+echo ">> Done: build-exe/$ZIP ($(du -h "build-exe/$ZIP" | cut -f1))"
