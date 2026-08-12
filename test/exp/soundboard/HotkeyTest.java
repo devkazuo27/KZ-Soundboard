@@ -11,9 +11,9 @@ import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
 /**
- * Comprueba que el hook global de teclado (JNativeHook, libreria nativa de 2013) sigue
- * recibiendo pulsaciones en el sistema actual. Sin esto las hotkeys no funcionan.
- * Pulsa y suelta SHIFT, que por si solo no tiene ningun efecto.
+ * Checks that the global keyboard hook (JNativeHook, a 2013 native binary) still receives key
+ * events on the current system. Without it, no hotkey works at all. It presses and releases
+ * SHIFT, which on its own has no effect.
  */
 public class HotkeyTest {
 
@@ -26,7 +26,7 @@ public class HotkeyTest {
         Utils.initGlobalKeyLibrary();
         GlobalScreen.getInstance().addNativeKeyListener(new NativeKeyListener() {
             public void nativeKeyPressed(NativeKeyEvent e) {
-                System.out.println("  hook: tecla pulsada -> " + NativeKeyEvent.getKeyText(e.getKeyCode()));
+                System.out.println("  hook: key pressed -> " + NativeKeyEvent.getKeyText(e.getKeyCode()));
                 pressed.countDown();
             }
             public void nativeKeyReleased(NativeKeyEvent e) {
@@ -45,9 +45,9 @@ public class HotkeyTest {
         boolean okRelease = released.await(5, TimeUnit.SECONDS);
         Utils.deregisterGlobalKeyLibrary();
 
-        System.out.println((okPress ? "  OK   " : "  FALLA") + "  el hook global recibe pulsaciones");
-        System.out.println((okRelease ? "  OK   " : "  FALLA") + "  el hook global recibe sueltas");
-        System.out.println(okPress && okRelease ? "\nHOTKEYS OK" : "\nHOTKEYS KO");
+        System.out.println((okPress ? "  PASS  " : "  FAIL  ") + "the global hook receives key presses");
+        System.out.println((okRelease ? "  PASS  " : "  FAIL  ") + "the global hook receives key releases");
+        System.out.println(okPress && okRelease ? "\nHOTKEYS OK" : "\nHOTKEYS BROKEN");
         System.exit(okPress && okRelease ? 0 : 1);
     }
 }

@@ -22,7 +22,7 @@ implements Runnable {
         boolean internetconnection = false;
         BufferedReader reader = null;
         try {
-            // FIX: sin timeouts, un servidor que no responde dejaba el hilo colgado indefinidamente.
+            // FIX: with no timeouts, an unresponsive server left this thread hanging forever.
             URLConnection connection = new URL(updatelink).openConnection();
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);
@@ -80,7 +80,7 @@ implements Runnable {
         boolean internetconnection = false;
         BufferedReader reader = null;
         try {
-            // FIX: sin timeouts, un servidor que no responde dejaba el hilo colgado indefinidamente.
+            // FIX: with no timeouts, an unresponsive server left this thread hanging forever.
             URLConnection connection = new URL(updatelink).openConnection();
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(5000);

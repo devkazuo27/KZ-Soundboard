@@ -7,15 +7,15 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 
 /**
- * Test de humo para los arreglos criticos. Ejercita el motor de audio sin GUI.
- * Uso: java -Djava.awt.headless=true -cp ... exp.soundboard.SmokeTest
+ * Smoke test for the critical fixes. Exercises the audio engine with no GUI.
+ * Usage: java -Djava.awt.headless=true -cp ... exp.soundboard.SmokeTest
  */
 public class SmokeTest {
 
     private static int failures = 0;
 
     public static void main(String[] args) throws Exception {
-        Utils.setAutoPTThold(false);   // el auto-PTT necesita la GUI cargada; aqui estorba
+        Utils.setAutoPTThold(false);   // auto-PTT needs the GUI loaded; it only gets in the way here
         File clip = makeToneFile(5);
 
         testNoDeviceSelectedDoesNotCrash(clip);
@@ -23,42 +23,42 @@ public class SmokeTest {
         testStopAllIsNotRevivedByANewClip(clip);
 
         clip.delete();
-        System.out.println(failures == 0 ? "\nTODOS LOS TESTS OK" : "\n" + failures + " TEST(S) FALLIDOS");
+        System.out.println(failures == 0 ? "\nALL TESTS PASSED" : "\n" + failures + " TEST(S) FAILED");
         System.exit(failures == 0 ? 0 : 1);
     }
 
-    /** P1: antes petaba con NullPointerException al no haber mixer seleccionado. */
+    /** P1: this used to blow up with a NullPointerException when no device was selected. */
     private static void testNoDeviceSelectedDoesNotCrash(File clip) {
-        AudioManager audio = new AudioManager();   // sin setPrimaryOutputMixer()
+        AudioManager audio = new AudioManager();   // no setPrimaryOutputMixer() call
         try {
             audio.playSoundClip(clip, false);
-            check("P1  reproducir sin dispositivo seleccionado no lanza excepcion", true);
+            check("P1  playing with no device selected throws nothing", true);
         } catch (Throwable t) {
-            check("P1  reproducir sin dispositivo seleccionado no lanza excepcion (" + t + ")", false);
+            check("P1  playing with no device selected throws nothing (" + t + ")", false);
         }
     }
 
-    /** P2: "Stop All" debe cortar de verdad un clip en curso. */
+    /** P2: "Stop All" must actually cut off a clip that is playing. */
     private static void testPlayAndStopAll(File clip) throws Exception {
         AudioManager audio = openDefaultOutput();
         if (audio == null) {
-            System.out.println("SKIP P2 (no hay dispositivo de salida disponible)");
+            System.out.println("SKIP P2 (no output device available)");
             return;
         }
         audio.playSoundClip(clip, false);
-        check("P2  el clip arranca", waitForClipThreads(1, 3000));
+        check("P2  the clip starts", waitForClipThreads(1, 3000));
         Utils.stopAllClips();
-        check("P2  Stop All detiene el clip", waitForClipThreads(0, 3000));
+        check("P2  Stop All stops the clip", waitForClipThreads(0, 3000));
     }
 
     /**
-     * P2 (la race de verdad): con el flag PLAYALL antiguo, un clip que arrancaba justo
-     * despues de "Stop All" ponia el flag a true otra vez y revivia al clip anterior.
+     * P2, the real race: with the old PLAYALL flag, a clip starting just after "Stop All" set
+     * the flag back to true and resurrected the previous clip.
      */
     private static void testStopAllIsNotRevivedByANewClip(File clip) throws Exception {
         AudioManager audio = openDefaultOutput();
         if (audio == null) {
-            System.out.println("SKIP P2b (no hay dispositivo de salida disponible)");
+            System.out.println("SKIP P2b (no output device available)");
             return;
         }
         File second = makeToneFile(5);
@@ -66,18 +66,18 @@ public class SmokeTest {
         waitForClipThreads(1, 3000);
 
         Utils.stopAllClips();
-        audio.playSoundClip(second, false);          // el "revividor"
+        audio.playSoundClip(second, false);          // the "reviver"
         Thread.sleep(700);
 
         boolean firstStillAlive = countClipThreads(clip) > 0;
-        check("P2b un clip nuevo no revive a los que se acaban de parar", !firstStillAlive);
+        check("P2b a new clip does not revive the ones just stopped", !firstStillAlive);
 
         Utils.stopAllClips();
         waitForClipThreads(0, 3000);
         second.delete();
     }
 
-    // ------------------------------------------------------------------ utilidades
+    // ------------------------------------------------------------------ helpers
 
     private static AudioManager openDefaultOutput() {
         AudioManager audio = new AudioManager();
@@ -86,11 +86,11 @@ public class SmokeTest {
             return null;
         }
         audio.setPrimaryOutputMixer(mixers[0]);
-        AudioManager.setFirstOutputGain(-70.0f);     // casi silencio, esto es un test
+        AudioManager.setFirstOutputGain(-70.0f);     // near silence, this is a test
         return audio;
     }
 
-    /** Los hilos de reproduccion se llaman como la ruta del fichero. */
+    /** Playback threads are named after the file path. */
     private static int countClipThreads(File clip) {
         String name = clip.toString();
         int n = 0;
@@ -119,7 +119,7 @@ public class SmokeTest {
         return false;
     }
 
-    /** WAV de N segundos con un tono suave, en el formato nativo de la aplicacion. */
+    /** An N second WAV holding a quiet tone, in the application's native format. */
     private static File makeToneFile(int seconds) throws Exception {
         int frames = (int)(Utils.format.getSampleRate() * seconds);
         byte[] pcm = new byte[frames * 4];
@@ -138,7 +138,7 @@ public class SmokeTest {
     }
 
     private static void check(String label, boolean ok) {
-        System.out.println((ok ? "  OK   " : "  FALLA") + "  " + label);
+        System.out.println((ok ? "  PASS  " : "  FAIL  ") + label);
         if (!ok) {
             failures++;
         }

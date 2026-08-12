@@ -1,65 +1,66 @@
-# Terceros
+# Third parties
 
-## La obra original
+## The original work
 
 **EXP Soundboard** © **Expenosa**, 2014 — <https://sourceforge.net/projects/expsoundboard/>
-Publicado bajo [Creative Commons Attribution-ShareAlike 3.0 Unported](LICENSE).
+Released under [Creative Commons Attribution-ShareAlike 3.0 Unported](LICENSE).
 
-Este repositorio es un trabajo derivado: los fuentes se descompilaron del JAR 0.5 publicado
-por el autor y se modificaron. Los cambios están listados en el README y al detalle en
-`CHANGES.diff`. El logotipo (`resources/exp/gui/EXP logo.png`) y el clip `loader.mp3` son
-parte de la obra original y se redistribuyen bajo la misma licencia.
+This repository is a derivative work: the sources were decompiled from the 0.5 JAR the author
+published and then modified. The changes are listed in the README and in full in
+`CHANGES.diff`. The logo (`resources/exp/gui/EXP logo.png`) and the `loader.mp3` clip are part
+of the original work and are redistributed under the same licence.
 
-Ni este repositorio ni sus autores están asociados con Expenosa, y esta versión no es
-oficial. Si el autor original quiere que se retire o se cambie algo, basta con abrir un
-issue.
+Neither this repository nor its authors are associated with Expenosa, and this version is not
+official. If the original author would like something removed or changed, opening an issue is
+enough.
 
-## Librerías
+## Libraries
 
-**No se redistribuyen en este repositorio.** `tools/fetch-deps.sh` las obtiene del JAR 0.5
-original (que las trae dentro) y de Maven Central. Cada una conserva su licencia:
+**They are not redistributed in this repository.** `tools/fetch-deps.sh` pulls them out of the
+original 0.5 JAR (which bundles them) and from Maven Central. Each keeps its own licence:
 
-| Librería | Versión | Licencia |
+| Library | Version | Licence |
 |---|---|---|
 | [JNativeHook](https://github.com/kwhat/jnativehook) | 1.1 | GPL v3 / LGPL v3 |
-| [JAVE](http://www.sauronsoftware.it/projects/jave/) (incluye binarios de ffmpeg) | 1.0.2 | GPL |
+| [JAVE](http://www.sauronsoftware.it/projects/jave/) (bundles ffmpeg binaries) | 1.0.2 | GPL |
 | [JLayer](http://www.javazoom.net/javalayer/javalayer.html) | 1.0.1 | LGPL |
 | [MP3SPI](http://www.javazoom.net/mp3spi/mp3spi.html) | 1.9.5 | LGPL |
 | [Tritonus share](http://www.tritonus.org/) | 0.3.6 | LGPL |
 | [MigLayout](https://www.miglayout.com/) | 1.5 (swing) | BSD |
 | [Gson](https://github.com/google/gson) | 2.2.4 | Apache 2.0 |
-| AppleJavaExtensions | — | Licencia de ejemplo de Apple |
+| AppleJavaExtensions | — | Apple sample code licence |
 | [FlatLaf](https://github.com/JFormDesigner/FlatLaf) | 3.6 | Apache 2.0 |
 
-FlatLaf es la única dependencia añadida por este rework; el resto venía ya en el JAR
-original. `guava-18.0.jar`, que el original incluía, se eliminó porque no lo usaba nada.
+FlatLaf is the only dependency this rework adds; everything else already shipped inside the
+original JAR. `guava-18.0.jar`, which the original included, was dropped because nothing used
+it.
 
-## Fuentes de los componentes GPL/LGPL
+## Sources for the GPL/LGPL components
 
-El JAR que se adjunta en las [releases](../../releases) lleva dentro estas librerías, sin
-modificar, tal cual venían en el JAR 0.5 original. Sus licencias obligan a indicar dónde
-conseguir su código fuente:
+The JAR attached to the [releases](../../releases) bundles these libraries, unmodified, exactly
+as they came in the original 0.5 JAR. Their licences require stating where to obtain their
+source code:
 
-| Componente | Código fuente |
+| Component | Source code |
 |---|---|
 | JNativeHook 1.1 (GPL v3 / LGPL v3) | <https://github.com/kwhat/jnativehook> |
 | JAVE 1.0.2 (GPL) | <http://www.sauronsoftware.it/projects/jave/> |
 | JLayer 1.0.1 (LGPL) | <http://www.javazoom.net/javalayer/sources.html> |
 | MP3SPI 1.9.5 (LGPL) | <http://www.javazoom.net/mp3spi/mp3spi.html> |
 | Tritonus share 0.3.6 (LGPL) | <http://www.tritonus.org/> |
-| ffmpeg (GPL) | Binario de 2009 incrustado en JAVE 1.0.2; se distribuye tal cual venía en él. La versión exacta no está documentada por JAVE — ver <http://www.sauronsoftware.it/projects/jave/> y <https://ffmpeg.org/download.html> |
+| ffmpeg (GPL) | A 2009 binary embedded in JAVE 1.0.2, redistributed exactly as it came in it. JAVE does not document the exact version — see <http://www.sauronsoftware.it/projects/jave/> and <https://ffmpeg.org/download.html> |
 
-Ninguno de estos componentes ha sido modificado en este rework. Si compilas tú el JAR con
-`build.sh` y lo redistribuyes, estas mismas obligaciones te aplican a ti.
+None of these components was modified by this rework. If you build the JAR yourself with
+`build.sh` and redistribute it, the same obligations apply to you.
 
-## Runtime de Java del ejecutable
+## The executable's Java runtime
 
-El `.zip` de Windows incluye un runtime de Java recortado con `jlink`, generado a partir de
-[Eclipse Temurin](https://adoptium.net/) (OpenJDK), bajo **GPL v2 con Classpath Exception**,
-que permite precisamente distribuirlo junto a una aplicación. Código fuente:
-(construido con Temurin 25.0.3) <https://github.com/adoptium/jdk25u> y <https://openjdk.org/>.
+The Windows `.zip` includes a Java runtime trimmed with `jlink`, generated from
+[Eclipse Temurin](https://adoptium.net/) (OpenJDK), under **GPL v2 with Classpath Exception**,
+which is precisely what allows shipping it alongside an application. Source code (built with
+Temurin 25.0.3): <https://github.com/adoptium/jdk25u> and <https://openjdk.org/>.
 
-## Herramientas
+## Tooling
 
-Los fuentes se recuperaron con [CFR](https://www.benf.org/other/cfr/) (MIT), que no se
-redistribuye aquí.
+The sources were recovered with [CFR](https://www.benf.org/other/cfr/) (MIT), which is not
+redistributed here.

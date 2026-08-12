@@ -4,10 +4,10 @@ import java.io.File;
 import javax.swing.SwingUtilities;
 
 /**
- * Abre la ventana principal con clips de ejemplo para poder juzgar el diseno con datos
- * reales. No se empaqueta en el JAR (vive en test/) y no toca las preferencias guardadas.
+ * Opens the main window with sample clips so the design can be judged against real data. It is
+ * not packaged into the JAR (it lives under test/) and it does not touch the saved preferences.
  *
- * Uso: java -cp ... exp.gui.DesignPreview [light|dark]
+ * Usage: java -cp ... exp.gui.DesignPreview [light|dark]
  */
 public class DesignPreview {
 

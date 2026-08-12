@@ -149,7 +149,7 @@ extends JFrame {
             }
         });
         JLabel lblExpenosa = new JLabel("Original \u00a9 Expenosa, 2014 \u00b7 CC BY-SA 3.0");
-        lblExpenosa.setToolTipText("EXP Soundboard lo creo Expenosa y se publico bajo Creative Commons Attribution-ShareAlike 3.0");
+        lblExpenosa.setToolTipText("EXP Soundboard was created by Expenosa and released under Creative Commons Attribution-ShareAlike 3.0");
         JButton btnProjectWebsite = new JButton("Project Website");
         btnProjectWebsite.addActionListener(new ActionListener(){
 

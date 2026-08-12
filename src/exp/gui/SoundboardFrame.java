@@ -129,11 +129,11 @@ extends JFrame {
     }
 
     public static void main(String[] args) {
-        // DISENO: el tema tiene que estar puesto antes de crear ningun componente.
+        // DESIGN: the theme must be installed before any component is created.
         Ui.installTheme();
         Utils.initGlobalKeyLibrary();
         Utils.startMp3Decoder();
-        // FIX: los componentes Swing deben construirse en el hilo de eventos (EDT).
+        // FIX: Swing components must be built on the event dispatch thread.
         SwingUtilities.invokeLater(new Runnable(){
 
             @Override
@@ -151,9 +151,9 @@ extends JFrame {
                 SoundboardFrame.this.exit();
             }
         });
-        // DISENO: el Look and Feel lo instala main() con Ui.installTheme(), antes de crear
-        // ningun componente. El bloque original buscaba Nimbus pero acababa aplicando el del
-        // sistema, que es de donde venia el aspecto de Windows XP de la aplicacion.
+        // DESIGN: the look and feel is installed by main() via Ui.installTheme(), before any
+        // component exists. The original block looked for Nimbus but ended up applying the
+        // system one, which is where the Windows XP look came from.
         filechooser = new JFileChooser();
         this.audioManager = new AudioManager();
         soundboard = new Soundboard();
@@ -304,15 +304,15 @@ extends JFrame {
                 }
             }
         });
-        // ------------------------------------------------------------ DISENO
-        // Una sola columna con secciones separadas, margenes de verdad y tamanos derivados
-        // de la fuente en lugar de columnas fijas en pixeles (que no escalan con el DPI).
+        // ------------------------------------------------------------ DESIGN
+        // A single column with separate sections, real margins, and sizes derived from the
+        // font instead of fixed pixel columns (which do not scale with the display DPI).
         this.table.setRowHeight(26);
         this.table.setShowGrid(false);
         this.table.setIntercellSpacing(new Dimension(0, 0));
         this.table.setFillsViewportHeight(true);
         this.table.getTableHeader().setReorderingAllowed(false);
-        // DISENO: la cabecera venia centrada y los datos alineados a la izquierda.
+        // DESIGN: the header was centred while the data below it was left-aligned.
         TableCellRenderer headerRenderer = this.table.getTableHeader().getDefaultRenderer();
         if (headerRenderer instanceof DefaultTableCellRenderer) {
             ((DefaultTableCellRenderer)headerRenderer).setHorizontalAlignment(SwingConstants.LEADING);
@@ -354,7 +354,7 @@ extends JFrame {
         content.add(outputs, "growx");
         content.add(Ui.section("Options"), "growx, gaptop 6");
         content.add(options, "growx");
-        // Sin esto la tabla arranca con una fila vacia fantasma.
+        // Without this the table starts with a phantom empty row.
         this.updateSoundboardTable();
 
         this.menuBar = new JMenuBar();
@@ -516,7 +516,7 @@ extends JFrame {
             }
         });
         TableColumnModel columnmod = this.table.getColumnModel();
-        // DISENO: el nombre del clip es lo que mas se lee, dale mas sitio que las teclas.
+        // DESIGN: the clip name is what gets read most, so give it more room than the keys.
         columnmod.getColumn(0).setPreferredWidth(300);
         columnmod.getColumn(1).setPreferredWidth(180);
         columnmod.getColumn(3).setMinWidth(0);
@@ -632,7 +632,7 @@ extends JFrame {
         prefs.putFloat("primaryOutputGain", AudioManager.getFirstOutputGain());
         prefs.putFloat("secondaryOutputGain", AudioManager.getSecondOutputGain());
         prefs.putFloat("micInjectorOutputGain", Utils.getMicInjectorGain());
-        // DISENO: recordar el tamano de la ventana entre sesiones.
+        // DESIGN: remember the window size across sessions.
         if ((this.getExtendedState() & Frame.MAXIMIZED_BOTH) == 0) {
             prefs.putInt("windowWidth", this.getWidth());
             prefs.putInt("windowHeight", this.getHeight());
@@ -730,8 +730,8 @@ extends JFrame {
         if (System.getProperty("os.name").toLowerCase().contains("mac")) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
             System.setProperty("com.apple.mrj.application.apple.menu.about.name", "EXP Soundboard");
-            // FIX: com.apple.eawt desaparecio del JDK en Java 9, asi que en un macOS con Java
-            // moderno la aplicacion ni siquiera abria. El icono del dock es opcional.
+            // FIX: com.apple.eawt was removed from the JDK in Java 9, so on a macOS running a
+            // modern Java the application would not even open. The dock icon is optional.
             try {
                 Application application = Application.getApplication();
                 application.setDockIconImage(icon);
@@ -741,7 +741,7 @@ extends JFrame {
                     Taskbar.getTaskbar().setIconImage(icon);
                 }
                 catch (Throwable ignored) {
-                    // sin icono en el dock
+                    // no dock icon, never mind
                 }
             }
         }

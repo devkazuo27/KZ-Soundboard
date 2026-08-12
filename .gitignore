@@ -1,12 +1,12 @@
-# Dependencias: se obtienen con tools/fetch-deps.sh (ver el porque en ese script)
+# Dependencies: fetched by tools/fetch-deps.sh (see that script for why)
 lib/
 
-# Artefactos de compilacion
+# Build artifacts
 classes/
 test-classes/
 staging/
 dist/
 *.class
 
-# Ejecutable de Windows generado por tools/build-exe.sh
+# Windows executable produced by tools/build-exe.sh
 build-exe/

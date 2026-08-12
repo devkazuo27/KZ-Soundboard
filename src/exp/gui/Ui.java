@@ -22,12 +22,13 @@ import javax.swing.UIManager;
 import net.miginfocom.swing.MigLayout;
 
 /**
- * Aspecto visual de la aplicacion: tema (claro / oscuro / el del sistema) y unos pocos
- * componentes reutilizables.
+ * Everything about how the application looks: the theme (light, dark, or whatever the system
+ * uses) plus a handful of reusable components.
  *
- * El original usaba el Look and Feel del sistema y ademas fijaba colores a mano
- * (Color.WHITE, Color.CYAN, Color.RED, Color.DARK_GRAY, fuentes "Tahoma"), lo que impide
- * cualquier tema oscuro y se ve mal al escalar por DPI. Todo eso pasa por aqui.
+ * The original applied the system look and feel and, on top of that, hard-coded colours
+ * (Color.WHITE, Color.CYAN, Color.RED, Color.DARK_GRAY) and fixed-size "Tahoma" fonts. That
+ * makes any dark theme impossible and looks wrong once the display DPI scales things. It all
+ * goes through here now.
  */
 public final class Ui {
 
@@ -41,7 +42,7 @@ public final class Ui {
     private Ui() {
     }
 
-    /** Instala el tema guardado. Debe llamarse antes de crear ninguna ventana. */
+    /** Installs the saved theme. Must be called before any window is created. */
     public static void installTheme() {
         apply(Utils.prefs.get(PREF_KEY, SYSTEM));
     }
@@ -50,7 +51,7 @@ public final class Ui {
         return current;
     }
 
-    /** Cambia el tema en caliente y lo recuerda. */
+    /** Switches theme on the fly and remembers the choice. */
     public static void setTheme(String theme) {
         if (theme.equals(current)) {
             return;
@@ -63,7 +64,7 @@ public final class Ui {
         }
     }
 
-    static void apply(String theme) {   // visible para DesignPreview (no persiste el tema)
+    static void apply(String theme) {   // visible to DesignPreview (does not persist the theme)
         current = theme;
         boolean dark = DARK.equals(theme) || (SYSTEM.equals(theme) && systemPrefersDark());
         FlatLaf.setup(dark ? new FlatMacDarkLaf() : new FlatMacLightLaf());
@@ -77,14 +78,14 @@ public final class Ui {
         UIManager.put("Table.showHorizontalLines", Boolean.TRUE);
         UIManager.put("TitlePane.unifiedBackground", Boolean.TRUE);
         UIManager.put("TableHeader.height", 30);
-        // Filas alternas discretas: una lista de clips se lee mucho mejor asi.
+        // Subtle row banding: a list of clips is far easier to scan with it.
         Color rowBackground = UIManager.getColor("Table.background");
         if (rowBackground != null) {
             UIManager.put("Table.alternateRowColor", shift(rowBackground, dark ? 10 : -8));
         }
     }
 
-    /** Aclara (delta positivo) u oscurece un color, sin salirse de rango. */
+    /** Lightens (positive delta) or darkens a colour, staying within range. */
     private static Color shift(Color color, int delta) {
         return new Color(
                 Math.max(0, Math.min(255, color.getRed() + delta)),
@@ -93,8 +94,8 @@ public final class Ui {
     }
 
     /**
-     * Marco de la tabla: esquinas redondeadas y sin el aro de foco azul, que al tener la
-     * tabla el foco pintaba un recuadro brillante alrededor de media ventana.
+     * Frames the table: rounded corners and no blue focus ring, which with the table focused
+     * used to draw a bright box around half the window.
      */
     public static void styleTableContainer(JScrollPane scrollPane) {
         scrollPane.putClientProperty(FlatClientProperties.STYLE, "focusWidth: 0; arc: 10");
@@ -102,8 +103,8 @@ public final class Ui {
     }
 
     /**
-     * Windows guarda la preferencia de tema de las aplicaciones en el registro. Java no la
-     * expone, asi que se consulta con "reg query". Si algo falla, se asume tema claro.
+     * Windows keeps the app theme preference in the registry. Java does not expose it, so it
+     * is read with "reg query". If anything goes wrong, assume the light theme.
      */
     private static boolean systemPrefersDark() {
         if (!System.getProperty("os.name").toLowerCase().contains("win")) {
@@ -126,7 +127,7 @@ public final class Ui {
             }
             String text = out.toString();
             int at = text.indexOf("0x");
-            return at >= 0 && text.charAt(at + 2) == '0';   // 0x0 = aplicaciones en oscuro
+            return at >= 0 && text.charAt(at + 2) == '0';   // 0x0 means apps use the dark theme
         }
         catch (Exception e) {
             return false;
@@ -138,9 +139,9 @@ public final class Ui {
         }
     }
 
-    // ------------------------------------------------------------------ componentes
+    // ------------------------------------------------------------------ components
 
-    /** Cabecera de seccion: titulo discreto seguido de una linea hasta el borde. */
+    /** Section header: a quiet title followed by a rule running to the edge. */
     public static JComponent section(String title) {
         JPanel panel = new JPanel(new MigLayout("insets 0, gap 8, fillx", "[][grow,fill]"));
         panel.setOpaque(false);
@@ -149,27 +150,29 @@ public final class Ui {
         return panel;
     }
 
-    /** Texto auxiliar, mas tenue que el normal. */
+    /** Secondary text, dimmer than the regular one. */
     public static JLabel hint(String text) {
         return new HintLabel(text);
     }
 
     /**
-     * Marca un campo que esta capturando teclas. Antes se pintaba el fondo de cian fijo, que
-     * sobre un tema oscuro deja el texto ilegible; el contorno de FlatLaf se adapta al tema.
+     * Marks a field that is currently capturing keys. This used to paint the background a
+     * fixed cyan, which over a dark theme leaves the text unreadable; the FlatLaf outline
+     * follows the theme instead.
      */
     public static void markCapturing(JTextField field) {
         field.putClientProperty(FlatClientProperties.OUTLINE, FlatClientProperties.OUTLINE_WARNING);
     }
 
-    /** Devuelve el campo a su aspecto normal (antes: fondo blanco fijo). */
+    /** Returns the field to its normal look (previously: a fixed white background). */
     public static void markIdle(JTextField field) {
         field.putClientProperty(FlatClientProperties.OUTLINE, null);
     }
 
     /**
-     * Las etiquetas se re-estilan en updateUI(), que Swing invoca al cambiar de tema; si se
-     * fijara el color una sola vez, al pasar a oscuro se quedaria el color del tema anterior.
+     * These labels restyle themselves in updateUI(), which Swing calls on a theme change. Were
+     * the colour set just once, switching to dark would leave the previous theme's colour
+     * behind.
      */
     private static class SectionLabel extends JLabel {
         private static final long serialVersionUID = 1L;

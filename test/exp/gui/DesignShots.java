@@ -9,11 +9,11 @@ import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
 /**
- * Renderiza cada ventana a un PNG para poder revisar el diseno sin tocar el escritorio:
- * las mueve fuera de pantalla dentro del mismo ciclo del hilo de eventos, asi que nunca
- * llegan a pintarse en el monitor.
+ * Renders every window to a PNG so the design can be reviewed without disturbing the desktop:
+ * each window is moved off-screen within the same event dispatch thread cycle, so it never
+ * actually gets painted on the monitor.
  *
- * Uso: java -cp ... exp.gui.DesignShots <carpeta-destino> [light|dark]
+ * Usage: java -cp ... exp.gui.DesignShots &lt;output-dir&gt; [light|dark]
  */
 public class DesignShots {
 
@@ -30,7 +30,7 @@ public class DesignShots {
             @Override
             public void run() {
                 try {
-                    SoundboardFrame main = new SoundboardFrame();   // no se muestra solo
+                    SoundboardFrame main = new SoundboardFrame();   // does not show itself
                     shoot(new SoundboardEntryEditor(main), "entry-editor-" + theme);
                     shoot(SettingsFrame.getInstanceOf(), "settings-" + theme);
                     shoot(AudioLevelsFrame.getInstance(), "audio-levels-" + theme);
@@ -42,12 +42,12 @@ public class DesignShots {
                 }
             }
         });
-        System.out.println("capturas en " + outputDir.getAbsolutePath());
+        System.out.println("screenshots written to " + outputDir.getAbsolutePath());
         System.exit(0);
     }
 
     private static void shoot(Window window, String name) {
-        window.setLocation(-5000, -5000);     // antes de que el sistema la pinte
+        window.setLocation(-5000, -5000);     // before the system gets to paint it
         int width = Math.max(1, window.getWidth());
         int height = Math.max(1, window.getHeight());
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);

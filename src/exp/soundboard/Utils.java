@@ -43,10 +43,10 @@ public class Utils {
     private static final String prefsName = "Expenosa's Soundboard";
     public static final Preferences prefs = Preferences.userRoot().node("Expenosa's Soundboard");
     /**
-     * FIX: antes era un boolean estatico no volatil (PLAYALL). "Stop All" lo ponia a false,
-     * pero cualquier clip que arrancase justo despues lo volvia a poner a true y revivia
-     * los clips que se estaban parando. Ahora cada clip captura la generacion actual y
-     * "Stop All" solo incrementa el contador: los clips ya iniciados mueren, los nuevos no.
+     * FIX: this used to be a non-volatile static boolean (PLAYALL). "Stop All" set it to
+     * false, but any clip starting right afterwards set it back to true and resurrected the
+     * clips that were being stopped. Now each clip captures the current generation and
+     * "Stop All" just bumps the counter: clips already running die, new ones are unaffected.
      */
     private static final AtomicInteger playGeneration = new AtomicInteger();
     public static final int BUFFERSIZE = 2048;
@@ -175,9 +175,9 @@ public class Utils {
             ++n2;
         }
         if (inputexists && outputexists) {
-            // FIX: un Thread no se puede volver a arrancar. Al desactivar y reactivar el
-            // Mic Injector saltaba IllegalThreadStateException y no volvia a funcionar hasta
-            // reiniciar la aplicacion. Ahora se crea una instancia nueva en cada arranque.
+            // FIX: a Thread cannot be started twice. Turning the Mic Injector off and back
+            // on threw IllegalThreadStateException and left it dead until the application was
+            // restarted. A fresh instance is now created on every start.
             MicInjector previous = micInjector;
             if (previous.isAlive()) {
                 try {
@@ -213,10 +213,10 @@ public class Utils {
     }
 
     public static void startMp3Decoder() {
-        // FIX: AudioSystem necesita un stream con mark/reset. Al leer el recurso directamente
-        // del JAR llega un InflaterInputStream que no lo soporta, asi que el precalentamiento
-        // del decodificador MP3 fallaba siempre con "mark/reset not supported" y el primer
-        // clip MP3 sufria el retardo de cargar el decodificador.
+        // FIX: AudioSystem needs a stream supporting mark/reset. Reading the resource straight
+        // out of the JAR yields an InflaterInputStream, which does not, so warming up the MP3
+        // decoder always failed with "mark/reset not supported" and the first MP3 clip paid the
+        // cost of loading the decoder.
         InputStream loaderfile = new BufferedInputStream(ClipPlayer.class.getResourceAsStream("loader.mp3"));
         try {
             AudioSystem.getAudioFileFormat(loaderfile);
@@ -500,8 +500,8 @@ public class Utils {
         int n2 = 0;
         while (n2 < n) {
             Thread thread = threadArray[n2];
-            // FIX: enumerate() puede dejar huecos a null (NPE) y el cast directo podia lanzar
-            // ClassCastException si el grupo contenia algun hilo de otro tipo.
+            // FIX: enumerate() can leave null holes (NPE) and the unchecked cast could throw
+            // ClassCastException if the group ever held a thread of another type.
             if (thread instanceof ClipPlayer && filepath.equals(thread.getName())) {
                 ((ClipPlayer)thread).stopPlaying();
                 stopped = true;
@@ -516,7 +516,7 @@ public class Utils {
         File file;
         SourceDataLine primarySpeaker = null;
         SourceDataLine secondarySpeaker = null;
-        volatile boolean playing = true; // FIX: lo escribe otro hilo (stopFilePlaying)
+        volatile boolean playing = true; // FIX: written by another thread (stopFilePlaying)
 
         public ClipPlayer(File file, SourceDataLine primarySpeaker, SourceDataLine secondarySpeaker) {
             super(clipPlayerThreadGroup, file.toString());

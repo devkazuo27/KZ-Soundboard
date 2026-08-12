@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Genera el ejecutable de Windows a partir del JAR, con jpackage (JDK 14+).
+# Builds the Windows executable from the JAR, using jpackage (JDK 14+).
 #
-# Produce una "app-image": una carpeta con EXP Soundboard.exe y un Java recortado dentro,
-# de modo que funciona en un Windows sin Java instalado y sin necesitar el .jar.
-# No genera instalador .msi/.exe porque eso requiere tener WiX Toolset instalado.
+# Produces an "app image": a folder holding EXP Soundboard.exe and a trimmed Java runtime, so
+# it works on a Windows box with no Java installed and without needing the .jar.
+# It does not produce an .msi/.exe installer, because that requires WiX Toolset to be present.
 #
-# Uso: tools/build-exe.sh      (ejecuta antes build.sh si no existe el JAR)
+# Usage: tools/build-exe.sh      (run build.sh first if the JAR is missing)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -13,24 +13,24 @@ JAR="dist/EXP Soundboard_051.jar"
 NAME="EXP Soundboard"
 VERSION="0.5.1"
 
-[ -f "$JAR" ] || { echo "Falta $JAR: ejecuta primero build.sh" >&2; exit 1; }
+[ -f "$JAR" ] || { echo "Missing $JAR: run build.sh first" >&2; exit 1; }
 
 rm -rf build-exe
 mkdir -p build-exe/input
 cp "$JAR" build-exe/input/
 
-# Icono: el logo original es un PNG de 256x256, que se envuelve en un contenedor .ico
-# (Windows admite iconos con carga PNG desde Vista).
+# Icon: the original logo is a 256x256 PNG, wrapped here in an .ico container (Windows has
+# supported icons with a PNG payload since Vista).
 python - <<'PY'
 import struct, pathlib
 png = pathlib.Path("resources/exp/gui/EXP logo.png").read_bytes()
-ico = struct.pack("<HHH", 0, 1, 1)                       # ICONDIR: reservado, tipo=icono, 1 imagen
-ico += struct.pack("<BBBBHHII", 0, 0, 0, 0, 1, 32,       # 0x0 = 256x256; 1 plano, 32 bits
-                   len(png), 22)                          # tamano y desplazamiento de los datos
+ico = struct.pack("<HHH", 0, 1, 1)                       # ICONDIR: reserved, type=icon, 1 image
+ico += struct.pack("<BBBBHHII", 0, 0, 0, 0, 1, 32,       # 0x0 means 256x256; 1 plane, 32 bits
+                   len(png), 22)                          # payload size and offset
 pathlib.Path("build-exe/app.ico").write_bytes(ico + png)
 PY
 
-echo ">> Generando el ejecutable con jpackage..."
+echo ">> Building the executable with jpackage..."
 jpackage \
     --type app-image \
     --name "$NAME" \
@@ -40,11 +40,11 @@ jpackage \
     --main-class exp.gui.SoundboardFrame \
     --icon build-exe/app.ico \
     --dest build-exe \
-    --vendor "Expenosa (obra original) - rework" \
+    --vendor "Expenosa (original work) - rework" \
     --copyright "Original (c) Expenosa 2014, CC BY-SA 3.0" \
     --description "EXP Soundboard $VERSION (rework)" \
     --java-options "--enable-native-access=ALL-UNNAMED" \
     --add-modules java.desktop,java.prefs,java.logging,java.naming,jdk.unsupported
 
-echo ">> Listo: build-exe/$NAME/$NAME.exe"
+echo ">> Done: build-exe/$NAME/$NAME.exe"
 du -sh "build-exe/$NAME"

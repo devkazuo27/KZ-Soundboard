@@ -38,7 +38,7 @@ extends Thread {
     private boolean fadeOut;
     int userVolume;
     private boolean muted = false;
-    private volatile boolean run = false; // FIX: lo escribe stopRunning() desde el EDT
+    private volatile boolean run = false; // FIX: written by stopRunning() from the EDT
     private long nextDrift;
     private final long driftinterval = 1800000L;
 
@@ -93,7 +93,7 @@ extends Thread {
         if (this.targetDataLine != null) {
             this.clearLines();
         }
-        // FIX: sin mixer seleccionado se producia un NullPointerException.
+        // FIX: with no device selected this threw a NullPointerException.
         if (this.inputMixer == null || this.outputMixer == null) {
             JOptionPane.showMessageDialog(null, "Mic Injector: input or output device not selected.", "Mic Injector", JOptionPane.WARNING_MESSAGE);
             return;
@@ -116,7 +116,7 @@ extends Thread {
         catch (LineUnavailableException ex) {
             JOptionPane.showMessageDialog(null, "Selected Output Line " + this.outputLineName + " is currently unavailable.", "Line Unavailable Exception", 0);
         }
-        // FIX: si alguna de las dos lineas no llego a abrirse, aqui saltaba un NullPointerException.
+        // FIX: if either line failed to open, this threw a NullPointerException.
         if (this.sourceDataLine == null || this.targetDataLine == null) {
             return;
         }
@@ -141,8 +141,8 @@ extends Thread {
     }
 
     private synchronized void clearLines() {
-        // FIX: null-safe; ademas ahora se llama tambien al parar el hilo, para no dejar el
-        // microfono y el cable virtual ocupados indefinidamente.
+        // FIX: null-safe, and now also called when the thread stops, so the microphone and
+        // the virtual audio cable are not left claimed forever.
         if (this.targetDataLine != null) {
             this.targetDataLine.close();
             this.targetDataLine = null;
@@ -196,7 +196,7 @@ extends Thread {
     @Override
     public void run() {
         this.setupGate();
-        // FIX: si las lineas no abrieron, el bucle giraba lanzando NullPointerException sin fin.
+        // FIX: if the lines never opened, this loop spun throwing NullPointerException forever.
         if (this.targetDataLine == null || this.sourceDataLine == null) {
             this.run = false;
             return;
@@ -209,8 +209,8 @@ extends Thread {
                 if (this.bytesRead > 0) {
                     this.write();
                 } else {
-                    // FIX: cuando la linea se para o se desconecta el dispositivo, read()
-                    // devuelve 0 sin bloquear y el bucle consumia un nucleo entero al 100%.
+                    // FIX: when the line stops or the device is unplugged, read() returns 0
+                    // without blocking and this loop used to burn a whole core at 100%.
                     try {
                         Thread.sleep(5L);
                     }

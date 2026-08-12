@@ -6,8 +6,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 /**
- * Comprueba que cambiar de tema en caliente (Option -> Appearance) reconstruye la interfaz
- * sin excepciones. No muestra ninguna ventana ni deja tocada la preferencia del usuario.
+ * Checks that switching theme on the fly (Option -> Appearance) rebuilds the interface without
+ * throwing. Shows no window and leaves the user's saved preference untouched.
  */
 public class ThemeSwitchTest {
 
@@ -25,29 +25,29 @@ public class ThemeSwitchTest {
                 frame.pack();
                 try {
                     Ui.setTheme(Ui.DARK);
-                    check("cambio a oscuro: " + UIManager.getLookAndFeel().getName(),
+                    check("switch to dark: " + UIManager.getLookAndFeel().getName(),
                             UIManager.getLookAndFeel().getName().toLowerCase().contains("dark"));
                     Ui.setTheme(Ui.LIGHT);
-                    check("cambio a claro: " + UIManager.getLookAndFeel().getName(),
+                    check("switch to light: " + UIManager.getLookAndFeel().getName(),
                             !UIManager.getLookAndFeel().getName().toLowerCase().contains("dark"));
                     Ui.setTheme(Ui.SYSTEM);
-                    check("cambio a 'seguir al sistema' sin excepciones", true);
+                    check("switch to 'match system' without throwing", true);
                 }
                 catch (Throwable t) {
                     t.printStackTrace();
-                    check("cambio de tema sin excepciones (" + t + ")", false);
+                    check("theme switch without throwing (" + t + ")", false);
                 }
                 frame.dispose();
             }
         });
 
-        Utils.prefs.put("uiTheme", original);   // dejar la preferencia como estaba
-        System.out.println(failures == 0 ? "\nTEMAS OK" : "\n" + failures + " FALLO(S)");
+        Utils.prefs.put("uiTheme", original);   // leave the preference as it was
+        System.out.println(failures == 0 ? "\nTHEMES OK" : "\n" + failures + " FAILURE(S)");
         System.exit(failures == 0 ? 0 : 1);
     }
 
     private static void check(String label, boolean ok) {
-        System.out.println((ok ? "  OK   " : "  FALLA") + "  " + label);
+        System.out.println((ok ? "  PASS  " : "  FAIL  ") + label);
         if (!ok) {
             failures++;
         }

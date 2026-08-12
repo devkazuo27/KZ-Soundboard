@@ -31,7 +31,7 @@ public class AudioManager {
             SourceDataLine primarySpeaker = null;
             SourceDataLine secondarySpeaker = null;
             if (this.primaryOutput == null) {
-                // FIX: sin mixer primario seleccionado se producia un NullPointerException.
+                // FIX: with no primary mixer selected this threw a NullPointerException.
                 warnOnce("No primary output device is selected. Choose one in the main window.", "No Output Device");
                 return;
             }
@@ -46,8 +46,9 @@ public class AudioManager {
                 primarySpeaker = null;
                 warnOnce("Selected Output Line: Primary Speaker is currently unavailable.", "Line Unavailable Exception");
             }
-            // FIX: sin linea primaria abierta no se puede reproducir; antes se seguia adelante
-            // y ClipPlayer petaba con NullPointerException al escribir y al cerrar.
+            // FIX: without an open primary line there is nothing to play on. The original
+            // code carried on anyway and ClipPlayer blew up with a NullPointerException,
+            // both when writing samples and again when closing.
             if (primarySpeaker == null) {
                 return;
             }
@@ -68,7 +69,7 @@ public class AudioManager {
         }
     }
 
-    /** FIX: MASTER_GAIN no existe en todas las lineas; antes lanzaba IllegalArgumentException. */
+    /** FIX: not every line supports MASTER_GAIN; this used to throw IllegalArgumentException. */
     private static void applyGain(SourceDataLine line, float value) {
         if (line.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
             FloatControl gain = (FloatControl)line.getControl(FloatControl.Type.MASTER_GAIN);
@@ -83,12 +84,12 @@ public class AudioManager {
                 line.close();
             }
             catch (RuntimeException ignored) {
-                // nada que hacer al cerrar
+                // nothing useful to do if closing fails
             }
         }
     }
 
-    /** FIX: evita una cascada de dialogos modales al mantener pulsada una hotkey. */
+    /** FIX: prevents a cascade of modal dialogs when a hotkey is held down. */
     private static void warnOnce(String message, String title) {
         if (message.equals(lastWarning)) {
             return;

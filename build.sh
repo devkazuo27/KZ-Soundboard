@@ -1,37 +1,36 @@
 #!/usr/bin/env bash
-# Compila y empaqueta EXP Soundboard en un JAR ejecutable plano.
+# Compiles and packages EXP Soundboard into a runnable JAR.
 #
-# Por que un JAR plano: el original usaba el "jar-in-jar loader" de Eclipse, que
-# desde Java 9 ya no consigue cargar las librerias anidadas (NoClassDefFoundError).
-# Aqui las dependencias se descomprimen dentro del JAR final, que es el formato
-# que entienden todas las versiones de Java.
+# Why a flat JAR: the original used Eclipse's jar-in-jar loader, which since Java 9 can no
+# longer load the nested libraries (NoClassDefFoundError). Here the dependencies are unpacked
+# into the final JAR, which is the layout every Java version understands.
 set -euo pipefail
 cd "$(dirname "$0")"
 
 MAIN_CLASS="exp.gui.SoundboardFrame"
 OUT_JAR="dist/EXP Soundboard_051.jar"
-RELEASE=17           # bytecode compatible con Java 17 en adelante
+RELEASE=17           # bytecode compatible with Java 17 and later
 
 rm -rf classes staging
 mkdir -p classes staging dist
 
 CP=$(ls lib/*.jar | tr '\n' ';')
 
-echo ">> Compilando..."
+echo ">> Compiling..."
 javac --release "$RELEASE" -encoding UTF-8 -Xlint:-options -nowarn \
       -cp "$CP" -d classes $(find src -name '*.java')
 
-echo ">> Desempaquetando dependencias..."
+echo ">> Unpacking dependencies..."
 for jar in lib/*.jar; do
-    # Se extrae directamente sobre staging (-o sobrescribe). Copiar despues con "cp" daba
-    # problemas con los dos binarios de ffmpeg de jave (6 MB + 8 MB) en Windows.
-    # Se excluyen las firmas digitales: MigLayout viene firmado y una firma sobre un JAR
-    # reempaquetado lo invalida (SecurityException al arrancar).
+    # Extracted straight into staging (-o overwrites). Copying afterwards with "cp" caused
+    # trouble on Windows with jave's two ffmpeg binaries (6 MB + 8 MB).
+    # Digital signatures are excluded: MigLayout ships signed, and a signature over a
+    # repackaged JAR invalidates it (SecurityException at startup).
     unzip -oq "$jar" -d staging \
           -x 'META-INF/MANIFEST.MF' 'META-INF/*.SF' 'META-INF/*.RSA' 'META-INF/*.DSA' \
              'META-INF/INDEX.LIST' 'META-INF/services/*'
-    # Los META-INF/services (SPI de audio de mp3spi/tritonus) hay que FUSIONARLOS, no
-    # sobrescribirlos: si un JAR pisa los del anterior, Java pierde el lector de MP3.
+    # META-INF/services entries (the audio SPI from mp3spi/tritonus) must be MERGED, not
+    # overwritten: if one JAR clobbers the previous one's, Java loses the MP3 reader.
     tmp=$(mktemp -d)
     if unzip -oq "$jar" 'META-INF/services/*' -d "$tmp" 2>/dev/null; then
         mkdir -p staging/META-INF/services
@@ -44,10 +43,10 @@ for jar in lib/*.jar; do
     rm -rf "$tmp"
 done
 
-echo ">> Anadiendo clases y recursos..."
+echo ">> Adding classes and resources..."
 cp -r classes/. staging/
 cp -r resources/. staging/
-# El JAR original llevaba dentro un Thumbs.db de Windows. Fuera.
+# The original JAR carried a Windows Thumbs.db inside. Out it goes.
 find staging -name 'Thumbs.db' -delete
 
 cat > staging/manifest.txt <<EOF
@@ -57,10 +56,10 @@ Implementation-Version: 0.5.1
 Enable-Native-Access: ALL-UNNAMED
 EOF
 
-echo ">> Empaquetando..."
+echo ">> Packaging..."
 ( cd staging && jar --create --file "../$OUT_JAR" --manifest manifest.txt \
       $(ls -A | grep -v '^manifest.txt$') )
 rm -f staging/manifest.txt
 
-echo ">> Listo: $(pwd)/$OUT_JAR"
+echo ">> Done: $(pwd)/$OUT_JAR"
 ls -la "$OUT_JAR"
