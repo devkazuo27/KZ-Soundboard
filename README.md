@@ -1,6 +1,6 @@
 # EXP Soundboard 0.5.1 — rework
 
-A modified version of **EXP Soundboard 0.5**, the Java desktop soundboard
+A modified version of **EXP Soundboard 0.5**, the Java desktop soundboard that
 [Expenosa](https://sourceforge.net/projects/expsoundboard/) released in December 2014 and has
 not touched since.
 
